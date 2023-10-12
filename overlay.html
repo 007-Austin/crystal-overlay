@@ -1,0 +1,1596 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset=""utf-8">
+    <title>GameHook Test Stuff</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="./styles/css-pokemon-gameboy.css"> -->
+    <link rel="stylesheet" href="https://luttje.github.io/css-pokemon-gameboy/styles/css-pokemon-gameboy.css">
+
+    <link href="style.css" rel="stylesheet" \>
+    <style>
+        body {
+            /*font-family: 'Open Sans'; */
+            /* font-family: 'PKMN RBYGSC';
+            font-smooth: never; */
+            overflow: hidden;
+
+            font-family: 'Pokemon GB';
+            font-smooth:never;
+            src:url("https://luttje.github.io/css-pokemon-gameboy/styles/fonts/Pokemon GB.ttf");
+            /*@font-face {
+                font-family: "PKMN RBYGSC";
+                src: url("yellow.PKMN RBYGSC.ttf");
+            }*/
+            background-color: magenta;
+            background-image: url("https://i.imgur.com/AbIM7iA.png");
+
+        }
+        .pixelated {
+            image-rendering: pixelated;
+            }
+
+
+        .square {
+            width: 1120px;
+            height: 1008px;
+            padding-top: 100%;
+            padding-left: 400px;
+            background-color: #ccc;
+        }
+        #stopwatch {
+            font-size: 1.5em;
+        }
+    </style>
+    <script>
+        function checkAll() {
+          var checkboxes = document.querySelectorAll('#encounterChecks input[type="checkbox"]');
+          checkboxes.forEach(function(checkbox) {
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new Event('change')); // Trigger the change event
+
+          });
+        }
+        
+        function uncheckAll() {
+          var checkboxes = document.querySelectorAll('#encounterChecks input[type="checkbox"]');
+          checkboxes.forEach(function(checkbox) {
+            checkbox.checked = false;
+            checkbox.dispatchEvent(new Event('change')); // Trigger the change event
+
+          });
+        }
+
+        
+
+        </script>
+</head>
+
+<body>
+    <div id="app">
+        <div v-if="ready == false">
+            Loading...
+        </div>
+        <div v-else>
+
+            <!-- Add content here! -->
+            <div><h1 class="framed" style="width:390px; text-align:right; font-size: 1em; height:80px; margin-top:0px; background-color: white;">
+                <span id="stopwatch" >00:00:00</span>
+                <span id="milliseconds">.000</span>
+            </h1></div>
+
+            <div><h1 class="framed" style="height: 80px; width:390px; padding-top:1px; margin-top:4px;margin-left:0px; text-align:center; background-color: white;">
+                <span id="startingPokemon" style="font-size:75%;"> &ensp;{{ displayPokemonName }}</span><!--{{ mapper.properties.player.team[0].species }}--></h1></div>
+            <!-- Moveset -->
+            <div class="framed" style="width:390px; margin-left:0px; height:110px; margin-top:6px; background-color: white; text-align:justify; text-justify:inter-word;">
+                <table width="250px" align="left"  cellpadding="0" cellspacing="0" style="margin-top:-62px">
+                <tr><td style="text-align: left;">{{ displayMove1}}</td><td style="text-align: right;">{{ displayMove1pp }}</td></tr><br>
+                <tr><td style="text-align: left;">{{ displayMove2}}</td><td style="text-align: right;">{{ displayMove2pp }}</td></tr><br>
+                <tr><td style="text-align: left;">{{ displayMove3}}</td><td style="text-align: right;">{{ displayMove3pp }}</td></tr><br>
+                <tr><td style="text-align: left;">{{ displayMove4}}</td><td style="text-align: right;">{{ displayMove4pp }}</td></tr>
+                </table>
+            </div>
+            <br><br><br><br><br>
+            <!-- Portrait -->
+            <span class="framed" style="padding-top:330px; margin-top:20px; background-color:white;"><img class="image pixelated" style="margin-left:-20px; margin-top:-40px;" 
+                 id="portrait" height=336 width="336"></span>
+            <br><br><br><br>
+
+            <!-- <div class="square"></div> -->
+            <!-- Stat Displays -->
+            <div class="framed" style="width:390px; height: 104px; padding-top:10px; margin-left:0px; margin-top:-10px; background-color: white; text-align:justify; text-justify:inter-word;">
+                <!-- <div class="progress-bar-container">
+                    <label for="progressBarR">HP</label>
+                    <progress id="progressBarR" class="p20" value="20" max="100">20%</progress>
+                </div>
+                <script>
+                    var i = mapper.properties.player.team[0].maxHp;
+                    var elem = document.getElementById("progressBarR");
+                    elem.value=i
+
+                </script> -->
+                <!-- <div class="progress-bar-container">
+                    <label for="progressBarR">Using &lt;Progress&gt;*:</label>
+                    <progress id="hpBar" class="p20" value="20" max="100">20%</progress>
+                </div> -->
+                <span>HP:&ensp;{{ mapper.properties.player.team[0].hp }} / {{ mapper.properties.player.team[0].maxHp }}</span>
+                <br>
+                <span>Lvl: {{mapper.properties.player.team[0].level }}     </span>
+                    <!-- <Next: <span id="expToNext">  </span> -->
+                    <br>
+                    <span>Item: {{ displayHeldItem }}
+                    </span>
+                <!-- <script>
+                    var level = this.mapper.properties.player.team[0].level+1
+                    document.getElementById("expToNext").innerHTML = "test";
+                </script> -->
+            
+            </div><div class="framed" style="width:390px; margin-left:0px; margin-top:6px; background-color: white; text-align:justify; text-justify:inter-word;">  
+              
+    
+                <table width="250px" align="left"  cellpadding="0" cellspacing="0" style="margin-top: -72px; border-spacing: 16px 0;">
+                    <tr>
+                    <td style="text-align: left">
+                    Attack: </td>
+                    <td style="text-align: right">
+                        <!-- 11, 17,  -->
+                        <template v-if='mapper.properties.overworld.mapGroup.value == "GOLDENROD" && (mapper.properties.overworld.mapNumber.value >= 11 && mapper.properties.overworld.mapNumber.value <= 18)' >{{ ((25600 - mapper.properties.player.team[0].statExpAttack) / 2560) < 0 ? 0 : Math.floor((25600 - mapper.properties.player.team[0].statExpAttack) / 2560) }}</template>
+                        <template v-else-if="mapper.properties.battle.mode.value != undefined && mapper.properties.battle.yourPokemon.attack>0 && mapper.properties.battle.yourPokemon.attack < 1000">{{ mapper.properties.battle.yourPokemon.attack }}</template>
+                        <template v-else-if="mapper.properties.player.badges.badge1.value === true ">{{ Math.floor(badgeBoost(mapper.properties.player.team[0].attack)) }}</template>
+                        <template v-else>{{ mapper.properties.player.team[0].attack }}</template>
+                    </td></tr>
+                    
+                <br>
+               
+                    <tr>
+                    <td style="text-align: left">
+                    Defense: </td>
+                    <td style="text-align: right"> 
+                        <template v-if='mapper.properties.overworld.mapGroup.value == "GOLDENROD" && (mapper.properties.overworld.mapNumber.value >= 11 && mapper.properties.overworld.mapNumber.value <= 18)' >{{ ((25600 - mapper.properties.player.team[0].statExpDefense) / 2560) < 0 ? 0 : Math.floor((25600 - mapper.properties.player.team[0].statExpDefense) / 2560) }}</template>
+                        <template v-else-if="mapper.properties.battle.mode.value != undefined && mapper.properties.battle.yourPokemon.defense > 0 && mapper.properties.battle.yourPokemon.defense < 1000">{{ mapper.properties.battle.yourPokemon.defense }}</template>
+                            <template v-else-if="mapper.properties.player.badges.badge6.value === true ">{{ Math.floor(badgeBoost(mapper.properties.player.team[0].defense)) }}</template>
+                            <template v-else>{{ mapper.properties.player.team[0].defense }}</template>
+                    </td></tr>
+                  
+                <br>
+             
+                    
+                    <tr>
+                    <td style="text-align: left">
+                    Sp. Atk: </td>
+                    <td style="text-align: right"> 
+                        <template v-if='mapper.properties.overworld.mapGroup.value == "GOLDENROD" && (mapper.properties.overworld.mapNumber.value >= 11 && mapper.properties.overworld.mapNumber.value <= 18)' >{{ ((25600 - mapper.properties.player.team[0].statExpSpecial) / 2560) < 0 ? 0 : Math.floor((25600 - mapper.properties.player.team[0].statExpSpecial) / 2560) }}</template>
+                        <template v-else-if="mapper.properties.battle.mode.value != undefined && mapper.properties.battle.yourPokemon.specialAttack > 0 && mapper.properties.battle.yourPokemon.specialAttack < 1000">{{ mapper.properties.battle.yourPokemon.specialAttack }}</template>
+                            <template v-else-if="mapper.properties.player.badges.badge7.value === true ">{{ Math.floor(badgeBoost(mapper.properties.player.team[0].specialAttack)) }}</template>
+                            <template v-else>{{ mapper.properties.player.team[0].specialAttack }}</template>
+
+                    </td>
+                <!-- <td>
+                    <template v-if="mapper.properties.battle.mode.bytes >0 && mapper.properties.battle.yourPokemon.modStageSpecialAttack.bytes> 7">{{ '+' }}</template>                            <template v-if="mapper.properties.battle.mode.bytes >0 && mapper.properties.battle.yourPokemon.modStageSpecialAttack.bytes> 0">{{ '   ' +mapper.properties.battle.yourPokemon.modStageSpecialAttack }}</template>
+                </td> -->
+                </tr>
+                <br>
+                    <td style="text-align: left">
+                    Sp. Def: </td>
+                    <td style="text-align: right"> 
+                        <template v-if='mapper.properties.overworld.mapGroup.value == "GOLDENROD" && (mapper.properties.overworld.mapNumber.value >= 11 && mapper.properties.overworld.mapNumber.value <= 18)' >{{ ((25600 - mapper.properties.player.team[0].statExpSpecial) / 2560) < 0 ? 0 : Math.floor((25600 - mapper.properties.player.team[0].statExpSpecial) / 2560) }}</template>
+                        <template v-else-if="mapper.properties.battle.mode.value != undefined&& mapper.properties.battle.yourPokemon.specialDefense > 0 && mapper.properties.battle.yourPokemon.specialDefense < 1000">{{ mapper.properties.battle.yourPokemon.specialDefense }} </template>
+                            <template v-else-if="mapper.properties.player.badges.badge7.value === true ">{{ Math.floor(badgeBoost(mapper.properties.player.team[0].specialDefense)) }}</template>
+                            <template v-else>{{ mapper.properties.player.team[0].specialDefense }}</template>
+                    </td></tr>
+                    <tr>
+                        <td style="text-align: left">
+                        Speed: </td>
+                        <td style="text-align: right"> 
+                            <template v-if='mapper.properties.overworld.mapGroup.value == "GOLDENROD" && (mapper.properties.overworld.mapNumber.value >= 11 && mapper.properties.overworld.mapNumber.value <= 18)' >{{ ((25600 - mapper.properties.player.team[0].statExpSpeed) / 2560) < 0 ? 0 : Math.floor((25600 - mapper.properties.player.team[0].statExpSpeed) / 2560) }}</template>
+                            <template v-else-if="mapper.properties.battle.mode.value != undefined && mapper.properties.battle.yourPokemon.speed >0 && mapper.properties.battle.yourPokemon.speed < 1000">{{ mapper.properties.battle.yourPokemon.speed }}</template>
+                                <template v-else-if="mapper.properties.player.badges.badge3.value === true ">{{ Math.floor(badgeBoost(mapper.properties.player.team[0].speed)) }}</template>
+                                <template v-else>{{ mapper.properties.player.team[0].speed }}</template>
+                        </td></tr>
+                        
+                <br>
+                    </table>
+                
+            </div>
+            
+            
+
+            <!-- <div class="framed" style="width:390px; margin-left:0px; margin-top:6px; background-color: white; text-align:justify; text-justify:inter-word;">
+   
+                {{ mapper.properties.battle.playerMove.move}} used! <br> Dealt {{ mapper.properties.battle.turnInfo.nextAttackDamage }} -->
+
+
+
+            <!-- Encounter Rate Adjustments -->
+            <!-- <div v-if="mapper.properties.overworld.map.value === `Route 1`"> </div> -->
+
+            <!-- <div> Move1Pp: {{ppFixer(mapper.properties.player.team[0].move1pp.value) }}</div> -->
+
+
+            <!-- <audio id="trainerBattle">
+                <source src="music/firered/09 - Battle! (Trainer) .flac" type="audio/flac">
+                Your browser does not support the audio element.
+              </audio> -->
+
+              <div style="position: absolute; right:0%; top:-20px; width:390px;" v-if="!isBattle">
+                <h3 class=framed style="text-align: center; height:8px; background-color:white;">Learnset<br></h3>
+                <div v-html="embeddedSection" style="font-size:9px;"></div>
+    
+                <!-- <div id="embeddedSection" style="font-size:8px;"></div> -->
+            </div>
+              
+    <div id="enemyPokemon" style="margin-left:1520px; margin-top:-944px;" v-if="isBattle">
+        <div><h1 class="framed" style="width:390px; text-align:center; font-size: 1em; height:80px; margin-top:0px; background-color: white;">
+            <span id="enemyTrainer" >{{ displayEnemyTrainerName }}</span>
+        </h1></div>
+        
+        <div><h1 class="framed" style="height: 80px; width:390px; padding-top:1px; margin-top:6px; margin-left:0px; text-align:center; background-color: white;">
+            <span id="enemyPokemon" style="font-size:75%;"> &ensp;{{ displayEnemyPokemonName }}</span><!--{{ mapper.properties.player.team[0].species }}--></h1></div>
+        <!-- Moveset -->
+        <div class="framed" style="width:390px; margin-left:0px; height:110px; margin-top:16px; background-color: white; text-align:justify; text-justify:inter-word;">
+            <table width="250px" align="left"  cellpadding="0" cellspacing="0" style="margin-top:-702px">
+            <tr><td style="text-align: left;">{{ displayEnemyMove1}}</td><td style="text-align: right;">{{ displayEnemyMove1pp }}</td></tr><br>
+            <tr><td style="text-align: left;">{{ displayEnemyMove2}}</td><td style="text-align: right;">{{ displayEnemyMove2pp }}</td></tr><br>
+            <tr><td style="text-align: left;">{{ displayEnemyMove3}}</td><td style="text-align: right;">{{ displayEnemyMove3pp }}</td></tr><br>
+            <tr><td style="text-align: left;">{{ displayEnemyMove4}}</td><td style="text-align: right;">{{ displayEnemyMove4pp }}</td></tr>
+            </table>
+        </div>
+        <br><br><br><br><br>
+        <!-- Portrait -->
+        <span class="framed" style="padding-top:330px; margin-top:20px; background-color:white;">
+            <img class="image pixelated" style="margin-left:-20px; margin-top:-40px;" 
+            id="enemyPortraitActive" height=336 width="336" :src="getEnemyPokemonImageSource"></span>
+        <br><br><br><br>
+
+        <!-- <div class="square"></div> -->
+        <!-- Stat Displays -->
+        <div class="framed" style="width:390px; height: 104px; padding-top:10px; margin-left:0px; margin-top:-10px; background-color: white; text-align:justify; text-justify:inter-word;">
+            <!-- <div class="progress-bar-container">
+                <label for="progressBarR">HP</label>
+                <progress id="progressBarR" class="p20" value="20" max="100">20%</progress>
+            </div>
+            <script>
+                var i = mapper.properties.player.team[0].maxHp;
+                var elem = document.getElementById("progressBarR");
+                elem.value=i
+
+            </script> -->
+            <!-- <div class="progress-bar-container">
+                <label for="progressBarR">Using &lt;Progress&gt;*:</label>
+                <progress id="hpBar" class="p20" value="20" max="100">20%</progress>
+            </div> -->
+            <span>HP:&ensp;{{ mapper.properties.battle.enemyPokemon.hp }} / {{ mapper.properties.battle.enemyPokemon.maxHp }}</span>
+            <br>
+            <span>Lvl: {{mapper.properties.battle.enemyPokemon.level }}     </span>
+                <!-- <Next: <span id="expToNext">  </span> -->
+                <br>
+                <span>Item: {{ displayEnemyHeldItem }}
+                </span>
+            <!-- <script>
+                var level = this.mapper.properties.player.team[0].level+1
+                document.getElementById("expToNext").innerHTML = "test";
+            </script> -->
+        
+        </div><div class="framed" style="width:390px; margin-left:0px; margin-top:6px; background-color: white; text-align:justify; text-justify:inter-word;">  
+        
+
+            <table width="250px" align="left"  cellpadding="0" cellspacing="0" style="margin-top: -72px; border-spacing: 16px 0;">
+                <tr>
+                <td style="text-align: left">
+                Attack: </td>
+                <td style="text-align: right">
+                    <!-- 11, 17,  -->
+                    <template v-if="mapper.properties.battle.mode.value != undefined && mapper.properties.battle.enemyPokemon.attack>0 && mapper.properties.battle.enemyPokemon.attack < 1000">{{ mapper.properties.battle.enemyPokemon.attack }}</template>
+                    <template v-else>{{ mapper.properties.battle.enemyPokemon.attack }}</template>
+                </td></tr>
+                
+            <br>
+        
+                <tr>
+                <td style="text-align: left">
+                Defense: </td>
+                <td style="text-align: right"> 
+                    <template v-if="mapper.properties.battle.mode.value != undefined && mapper.properties.battle.enemyPokemon.defense > 0 && mapper.properties.battle.enemyPokemon.defense < 1000">{{ mapper.properties.battle.enemyPokemon.defense }}</template>
+                        <template v-else>{{ mapper.properties.battle.enemyPokemon.defense }}</template>
+                </td></tr>
+            
+            <br>
+        
+                
+                <tr>
+                <td style="text-align: left">
+                Sp. Atk: </td>
+                <td style="text-align: right"> 
+                    <template v-if="mapper.properties.battle.mode.value != undefined && mapper.properties.battle.enemyPokemon.specialAttack > 0 && mapper.properties.battle.enemyPokemon.specialAttack < 1000">{{ mapper.properties.battle.enemyPokemon.specialAttack }}</template>
+                        <template v-else>{{ mapper.properties.battle.enemyPokemon.specialAttack }}</template>
+
+                </td>
+            <!-- <td>
+                <template v-if="mapper.properties.battle.mode.bytes >0 && mapper.properties.battle.yourPokemon.modStageSpecialAttack.bytes> 7">{{ '+' }}</template>                            <template v-if="mapper.properties.battle.mode.bytes >0 && mapper.properties.battle.yourPokemon.modStageSpecialAttack.bytes> 0">{{ '   ' +mapper.properties.battle.yourPokemon.modStageSpecialAttack }}</template>
+            </td> -->
+            </tr>
+            <br>
+                <td style="text-align: left">
+                Sp. Def: </td>
+                <td style="text-align: right"> 
+                    <template v-if="mapper.properties.battle.mode.value != undefined&& mapper.properties.battle.enemyPokemon.specialDefense > 0 && mapper.properties.battle.enemyPokemon.specialDefense < 1000">{{ mapper.properties.battle.enemyPokemon.specialDefense }} </template>
+                        <template v-else>{{ mapper.properties.battle.enemyPokemon.specialDefense }}</template>
+                </td></tr>
+                <tr>
+                    <td style="text-align: left">
+                    Speed: </td>
+                    <td style="text-align: right"> 
+                        <template v-if="mapper.properties.battle.mode.value != undefined && mapper.properties.battle.enemyPokemon.speed >0 && mapper.properties.battle.enemyPokemon.speed < 1000">{{ mapper.properties.battle.enemyPokemon.speed }}</template>
+                            <template v-else>{{ mapper.properties.battle.enemyPokemon.speed }}</template>
+                    </td></tr>
+                    
+                    <br>
+                </table>
+            
+                </div>
+            </div>
+            
+
+            <!-- end v else part -->
+        </div>
+<!--------------------------------------------------------------------------- end vue part ----------------------------------------------------------------------------------------->
+    </div>
+
+    <div style="background-color:white; height:1100; width:800;"></div>
+
+    <div class="framed" style="position: absolute; top:10%; left:40%; width:400px; background-color: white;">
+        <input type="text" id="starter" value="Starting Pokemon">
+            <button id="setStarter">Update</button>
+            <br><br><br>
+            <select id="changeDay" value="Sunday">
+                <option value="Sunday">Sunday</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+
+            </select>
+            <button id="setDay">Update</button>
+            <br><br><br>
+            <select id="changeHiddenPower" value="Perfect">
+                <option value="Perfect">Perfect  DVs</option>
+                <option value="Minimum">Minimum  DVs</option>
+                <option value="Bug">Bug 13/13</option>
+                <option value="Dark">Dark 15/15</option>
+                <option value="Dragon">Dragon 15/14</option>
+                <option value="Electric">Electric 14/15</option>
+                <option value="Fighting">Fighting 12/12</option>
+                <option value="Fire">Fire 14/12</option>
+                <option value="Flying">Flying 12/13</option>
+                <option value="Ghost">Ghost 13/14</option>
+                <option value="Grass">Grass 14/14</option>
+                <option value="Ground">Ground 12/15</option>
+                <option value="Ice">Ice 15/13</option>
+                <option value="Poison">Poison 12/14</option>
+                <option value="Psychic">Psychic 15/12</option>
+                <option value="Rock">Rock 13/12</option>
+                <option value="Steel">Steel 13/15</option>
+                <option value="Water">Water 14/13</option>
+            </select>
+    </div>
+
+    <div class="framed" style="position: absolute; top:30%; left:30%; background-color: white; height:570px; width:750px;" id="encounterChecks">
+            <h4 style="text-align: center";>Encounters</4>
+            <div style="text-align: left";>
+            Johto<br><br>
+            Route 29<input type="checkbox" id="Route 29" checked> <br>
+            Route 30<input type="checkbox" id="Route 30" checked> <br>
+            Route 31<input type="checkbox" id="Route 31" checked> <br>
+            Route 32<input type="checkbox" id="Route 32" checked> <br>
+            Route 34<input type="checkbox" id="Route 34" checked> <br>
+            Route 35<input type="checkbox" id="Route 35" checked> <br>
+            Route 37<input type="checkbox" id="Route 37" checked> <br>
+            Route 38<input type="checkbox" id="Route 38" checked> <br>
+            Route 40<input type="checkbox" id="Route 40" checked> <br>
+            Route 41<input type="checkbox" id="Route 41" checked> <br>
+            Route 42<input type="checkbox" id="Route 42" checked> <br>
+            Route 43<input type="checkbox" id="Route 43" checked> <br>
+            Route 44<input type="checkbox" id="Route 44" checked> <br>
+            Sprout Tower<input type="checkbox" id="Sprout Tower" checked> <br>
+            Union Cave<input type="checkbox" id="Union Cave" checked> <br>
+            Ilex Forest<input type="checkbox" id="Ilex Forest" checked> <br>
+            Slowpoke Well<input type="checkbox" id="Slowpoke Well" checked> <br>
+            Mt. Mortar<input type="checkbox" id="Mt. Mortar" checked> <br>
+            Burnt Tower<input type="checkbox" id="Burnt Tower" checked> <br>
+            Whirl Islands<input type="checkbox" id="Whirl" checked> <br>
+            Lake of Rage<input type="checkbox" id="Lake of Rage" checked> <br>
+            Ice Path<input type="checkbox" id="Ice Path" checked> <br>
+            Dragon's Den<input type="checkbox" id="Dragon's Den" checked> <br>
+            Blackthorn City<input type="checkbox" id="Blackthorn City" checked> <br>
+            </div>
+            <div style="margin-left:400px; margin-top:-460px;">
+            Kanto<br><br>
+            Tohjo Falls<input type="checkbox" id="Tohjo Falls" checked> <br>
+            Mt. Silver<input type="checkbox" id="Mt. Silver" checked> <br>
+            Route 28<input type="checkbox" id="Route 28" checked> <br>
+
+            Victory Road<input type="checkbox" id="Victory Road" checked> <br>
+            Diglett's Cave<input type="checkbox" id="Diglett's Cave" checked> <br>
+            Mt. Moon<input type="checkbox" id="Mt. Moon" checked> <br>
+            Rock Tunnel<input type="checkbox" id="Rock Tunnel" checked> <br>
+            Route 1<input type="checkbox" id="Route 1" checked> <br>
+            Route 2<input type="checkbox" id="Route 2" checked> <br>
+            Route 6<input type="checkbox" id="Route 6" checked> <br>
+            Route 9<input type="checkbox" id="Route 9" checked> <br>
+            Route 10<input type="checkbox" id="Route 10" checked> <br>
+            Route 19<input type="checkbox" id="Route 19" checked> <br>
+            Route 20<input type="checkbox" id="Route 20" checked> <br>
+            Route 21<input type="checkbox" id="Route 21" checked> <br>
+            Route 22<input type="checkbox" id="Route 22" checked> <br>
+            Route 26<input type="checkbox" id="Route 26" checked> <br>
+            Route 27<input type="checkbox" id="Route 27" checked> <br>
+            </div>
+            <div style="margin-left:300px; margin-top:10px;">
+                <button onclick="checkAll()">Check All</button>
+                <button onclick="uncheckAll()">Uncheck All</button>
+              </div>
+
+        </div>   
+
+
+        
+
+
+<!-- 
+        <script>
+            
+        </script> -->
+        <!-- <script src="../music/musicData.js"></script>
+        <script src="../music/soundData.js"></script>
+        <script src="../music/customTrainers.js"></script>
+        <script src="../music/music.js"></script> -->
+    <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+    <script src="https://unpkg.com/vue@latest/dist/vue.global.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@3.2.6/dist/vue.global.min.js"></script> -->
+
+    <script src="http://localhost:8085/dist/gameHookMapperClient.js"></script>
+
+    <script type="text/javascript">
+        const app = Vue.createApp({
+            data() {
+                return {
+                    embeddedSection: '', // Define it here
+                    ready: false,
+                    mapper: null,
+                    midfight: null,
+                    enemyName: '',
+                    frozenEncounters: [],
+                    // checkedRoutes: {
+                    //     'Route 29': false,
+                    //     'Route 30': false,
+                    //     'Route 31': false,
+                    //     'Route 32': false,
+                    // },
+                    // encounters : [
+                    // //name, mapGroup, mapNumber, morning, day, night, water
+                    // ["Route 29", "NEW BARK", 3, 25, 25, 25, 0],
+                    // ["Route 30", "CHERRYGROVE", 1, 25, 25, 25, 5],
+                    // ["Route 31", ]
+                    // ]
+                }
+            },
+            methods: {
+                ppFixer(y) {
+                    if (y != null) {
+                        return y % 64
+                    }
+                    else
+                        return " "
+                },
+                badgeBoost(x) {
+                    return x * 1.125;
+                },
+                updateEncounterChecks() {
+                // Reset the frozenEncounters array
+                    // this.frozenEncounters = [];
+
+                    // // Loop through the checkboxes and update the array
+                    // const checkboxes = ['route29check', 'route30check', 'route31check', 'route32check'];
+                    // for (const checkboxId of checkboxes) {
+                    //     const checkbox = document.getElementById(checkboxId);
+                    //     this.frozenEncounters.push({
+                    //         value: checkbox.value,
+                    //         checked: checkbox.checked,
+                    //     });
+                    // }
+                    // console.log("clicked the button")
+                    // console.log(this.frozenEncounters);
+                    // const regularArray = [...this.frozenEncounters];
+                    // console.log(regularArray);
+
+                },
+                // nerfEncounters() {
+                //     console.log("checkbox pressed");
+                //     const rate = 0x00;
+                //     // let morn = this.mapper.encounterRate.morning.value;
+                //     // let day = this.mapper.encounterRate.day.value;
+                //     // let night = this.mapper.
+                //     let group = this.mapper.properties.overworld.mapGroup.value;
+                //     let number = this.mapper.properties.overworld.mapNumber.value;
+                //     for(let i = 0; i < this.encounters.length; i++) {
+                //         // console.log("yes");
+                //     //if (this.mapper.properties.overworld.map == "Route 1" || this.mapper.properties.overworld.map == "Viridian Forest" || this.mapper.properties.overworld.map == "Mt Moon - 1"|| this.mapper.properties.overworld.map == "Route 2" || this.mapper.properties.overworld.map == "Mt Moon - 2" || this.mapper.properties.overworld.map == "Mt Moon - 3"){
+                //         console.log(group + this.encounters[i][1] + number + this.encounters[i][2])
+                //         if (group == this.encounters[i][1] && number == this.encounters[i][2] && document.getElementById(this.encounters[i][0]).checked) {
+                //             // console.log(this.frozenEncounters);
+                //             // await Promise.all([
+                                
+                //                 this.mapper.properties.encounterRate.morning.setBytes([rate], false);
+                //                 this.mapper.properties.encounterRate.day.setBytes([rate], false);
+                //                 this.mapper.properties.encounterRate.night.setBytes([rate], false);
+                //                 this.mapper.properties.encounterRate.water.setBytes([rate], false);
+                //                 // await delay(500),
+                //                 console.log("Adjusting rate to: "+this.mapper.properties.encounterRate.morning.value);
+                //             // ])
+                //         }
+                        
+                //     }
+                // }
+
+                async updateEmbeddedSection() {
+                    // console.log("changed lead");
+                    let output = '';
+                    let targetURL =
+                    "https://bulbapedia.bulbagarden.net/wiki/" +
+                    this.mapper.properties.player.team[0].species +
+                    "_(Pokémon)/Generation_II_learnset";
+                    // console.log(targetURL);
+                    if(this.mapper.properties.player.team[0].species.value) {
+
+                    
+                        try {
+                        const response = await fetch(targetURL);
+                        const data = await response.text();
+                        /*let levelingUpSection = data.match(
+                            /<h4><span class="mw-headline" id="By_leveling_up">By <a href="\/wiki\/Level" title="Level">leveling up<\/a><\/span>([\s\S]*?)<li>Click on the generation numbers at the top to see Move Tutor moves from other generations<\/li><\/ul>\n<\/td><\/tr><\/tbody><\/table>/
+                        );*/
+                        // console.log(data);
+                        let levelingUpSection = data.match(/<h4><span class="mw-headline" id="By_leveling_up">By <a href="\/wiki\/Level" title="Level">leveling up<\/a><\/span>([\s\S]*?) generations<\/li><\/ul>\n<\/td><\/tr><\/tbody><\/table>/)
+                        if (levelingUpSection) {
+                            // console.log(levelingUpSection);
+                            let modifiedSection = levelingUpSection[0].replace(
+                            /href="\/wiki/g,
+                            'href="https://bulbapedia.bulbagarden.net/wiki'
+                            );
+                            let pattern1 = /<th width="60%" style="line-height:30px;"><big><big><big>Generation II<\/big><\/big>[\S\s\n]*?(?=\n<\/th><\/tr><\/tbody><\/table>\n<\/td)/;
+                            let modifiedSection2 = modifiedSection.replace(pattern1, '');
+                            let pattern2 = /<ul><li><b>Bold<\/b> indicates[\S\s]*<\/li><\/ul>/;
+                            modifiedSection2 = modifiedSection2.replace(pattern2,'');
+                            let pattern3 = />Accuracy</;
+                            modifiedSection2 = modifiedSection2.replace(pattern3,">Acc<");
+                            // modifiedSection2 = modifiedSection2.replace(pattern2,'');
+
+                            //console.log(modifiedSection2);
+                            levelingUpSection = modifiedSection2;
+                            
+                            //let tmSection = data.match(/<span class="mw-headline" id="By_leveling_up">By <a href="\/wiki\/Level" title="Level">leveling up<\/a><\/span>([\s\S]*?)<h4><span class="mw-headline" id="By_a_prior_evolution">/)
+
+                            output= levelingUpSection;
+                            // Update the data property
+                        }
+                        let tmSection = data.match(/<h4><span id="By_TM\/HM">([\s\S]*?) generations<\/li><\/ul>\n<\/td><\/tr><\/tbody><\/table>/)
+                        if (tmSection) {
+                            let pattern0 = /<td align="center" style="background:#FFFFFF; border:1px solid #D8D8D8;"><a href="[\s\S]*?_Sprite.png[\s\S]*?<\/a>\n<\/td>/g;
+                            let modifiedSection = tmSection[0].replace(pattern0,'');
+                            modifiedSection = modifiedSection.replace(
+                            /href="\/wiki/g,
+                            'href="https://bulbapedia.bulbagarden.net/wiki'
+                            );
+                            let pattern1 = /<th width="60%" style="line-height:30px;"><big><big><big>Generation II<\/big><\/big>[\S\s\n]*?(?=\n<\/th><\/tr><\/tbody><\/table>\n<\/td)/;
+                            let modifiedSection2 = modifiedSection.replace(pattern1, '');
+                            let pattern2 = /<ul><li><b>Bold<\/b> indicates[\S\s]*<\/li><\/ul>/;
+                            modifiedSection2 = modifiedSection2.replace(pattern2,'');
+                            let pattern3 = />Accuracy</;
+                            modifiedSection2 = modifiedSection2.replace(pattern3,">Acc<");
+                            let pattern4 = /colspan="2"/
+                            modifiedSection2 = modifiedSection2.replace(pattern4,'"colspan="1"');
+                            tmSection = modifiedSection2;
+
+                            output= output +"<br>" + tmSection;
+                        }
+
+                        let tutorSection = data.match(/<h4><span class="mw-headline" id="By_tutoring">[\s\S]*?<td class="roundybottom" style="background:#9DB7F5; font-size: 90%; line-height:10px;" colspan="6">/)
+                        if (tutorSection) {
+                            //let pattern0 = /<td align="center" style="background:#FFFFFF; border:1px solid #D8D8D8;"><a href="[\s\S]*?_Sprite.png[\s\S]*?<\/a>\n<\/td>/g;
+                            //let modifiedSection = tutorSection[0].replace(pattern0,'');
+                            let modifiedSection = tutorSection[0].replace(
+                            /href="\/wiki/g,
+                            'href="https://bulbapedia.bulbagarden.net/wiki'
+                            );
+                            let pattern1 = /<th width="60%" style="line-height:30px;"><big><big><big>Generation II<\/big><\/big>[\S\s\n]*?(?=\n<\/th><\/tr><\/tbody><\/table>\n<\/td)/;
+                            let modifiedSection2 = modifiedSection.replace(pattern1, '');
+                            //let pattern2 = /<ul><li><b>Bold<\/b> indicates[\S\s]*<\/li><\/ul>/;
+                            //modifiedSection2 = modifiedSection2.replace(pattern2,'');
+                            tutorSection = modifiedSection2;
+                            output= output +"<br>" + tutorSection +"</th></tr></tbody></table>";
+                        }
+
+                        let breedSection = data.match(/<h4><span class="mw-headline" id="By_breeding">[\s\S]*?<td class="roundybottom" style="background:#9DB7F5; font-size: 90%; line-height:10px;" colspan="6">/)
+                        if (breedSection) {
+                            // console.log(levelingUpSection);
+                            //let pattern0 = /<td align="center" style="background:#FFFFFF; border:1px solid #D8D8D8;"><a href="[\S\s]*?\/wiki\/File:Bag_TM_[\S\s]*?_Sprite.png[\S\s]*?"24" \/><\/a>\n<\/td>/
+                            //let pattern0 = /<td align="center" style="background:#FFFFFF; border:1px solid #D8D8D8;"><a href="[\S\s]*?_Sprite.png[\S\s]*?[\S\s]*?</a>/
+                            //let pattern0 = /<td align="center" style="background:#FFFFFF; border:1px solid #D8D8D8;"><a href="[\S\s]*?_Sprite.png[\S\s]*?<\/a>\n<\/td>/;
+                            //let pattern0 = /<td align="center" style="background:#FFFFFF; border:1px solid #D8D8D8;"><a href="[\S\s]*?_Sprite.png[\S\s]*?<\/a>\n<\/td>/
+                            //let pattern0 = /<td align="center" style="background:#FFFFFF; border:1px solid #D8D8D8;"><a href="[\s\S]*?_Sprite.png[\s\S]*?<\/a>\n<\/td>/g;
+                            
+                            //let modifiedSection = breedSection[0].replace(pattern0,'');
+                            let pattern0 = /<th>&#160;<a href="\/wiki\/Egg_Move" title="Egg Move"><span style="color:#000;">Father<\/span><\/a>&#160;<\/th>/;
+                            let modifiedSection = breedSection[0].replace(pattern0,'');
+                            let pattern2 = /<td style="background:#FFFFFF; border:1px solid #D8D8D8;"><a href="\/wiki\/[:\-.'A-z]*_\(Pok[%A-z0-9]*mon\)" title="[:\-.'A-z]*"><img alt[\s\S]*?<\/td>/g;
+                            modifiedSection = modifiedSection.replace(pattern2,'');
+                            modifiedSection = modifiedSection.replace(
+                            /href="\/wiki/g,
+                            'href="https://bulbapedia.bulbagarden.net/wiki'
+                            );
+                            let pattern1 = /<th width="60%" style="line-height:30px;"><big><big><big>Generation II<\/big><\/big>[\S\s\n]*?(?=\n<\/th><\/tr><\/tbody><\/table>\n<\/td)/;
+                            let modifiedSection2 = modifiedSection.replace(pattern1, '');
+                            //let pattern2 = /<td style=[\s\S]*?img alt[\s\S]*?<\/td>/g;
+                            //modifiedSection2 = modifiedSection2.replace(pattern2,'');
+                            
+                            // console.log(modifiedSection2);
+                            let pattern3 = /<ul><li><b>Bold<\/b> indicates[\S\s]*<\/li><\/ul>/;
+                            modifiedSection2 = modifiedSection2.replace(pattern3,'');
+                            
+
+                            //console.log(modifiedSection2);
+                            breedSection = modifiedSection2;
+                            //let tmSection = data.match(/<span class="mw-headline" id="By_leveling_up">By <a href="\/wiki\/Level" title="Level">leveling up<\/a><\/span>([\s\S]*?)<h4><span class="mw-headline" id="By_a_prior_evolution">/)
+
+                            output= output +"<br>" + breedSection;
+                            // Update the data property
+                        
+                        }
+
+
+                        this.embeddedSection = output; 
+
+                        } catch (error) {
+                        console.error('Error fetching content:', error);
+                        }
+                    }
+                },
+
+            },
+            computed: {
+                displayPokemonName() {
+                    if (this.mapper.properties.player.team[0].species.value === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.player.team[0].species;
+                    }
+                },
+
+
+                displayHeldItem() {
+                    if (this.mapper.properties.player.team[0].heldItem.value === null) {
+                        return 'None';
+                    } else {
+                        return this.mapper.properties.player.team[0].heldItem;
+                    }
+                },
+                displayMove1() {
+                    if (this.mapper.properties.player.team[0].move1.value === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.player.team[0].move1;
+                    }
+                },
+                displayMove2() {
+                    if (this.mapper.properties.player.team[0].move2.value === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.player.team[0].move2;
+                    }
+                },
+                displayMove3() {
+                    if (this.mapper.properties.player.team[0].move3.value === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.player.team[0].move3;
+                    }
+                },
+                displayMove4() {
+                    if (this.mapper.properties.player.team[0].move4.value === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.player.team[0].move4;
+                    }
+                },
+                displayMove1pp() {
+                    if (this.mapper.properties.player.team[0].move1.value === null) {
+                        return '';
+                    } else {
+                        return this.ppFixer(this.mapper.properties.player.team[0].move1pp);
+                    }
+                },
+                displayMove2pp() {
+                    if (this.mapper.properties.player.team[0].move2.value === null) {
+                        return '';
+                    } else {
+                        return this.ppFixer(this.mapper.properties.player.team[0].move2pp);
+                    }
+                },
+                displayMove3pp() {
+                    if (this.mapper.properties.player.team[0].move3.value === null) {
+                        return '';
+                    } else {
+                        return this.ppFixer(this.mapper.properties.player.team[0].move3pp);
+                    }
+                },
+                displayMove4pp() {
+                    if (this.mapper.properties.player.team[0].move4.value === null) {
+                        return '';
+                    } else {
+                        return this.ppFixer(this.mapper.properties.player.team[0].move4pp);
+                    }
+                },
+                displayEnemyPokemonName() {
+                    if (this.mapper.properties.battle.enemyPokemon.species === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.battle.enemyPokemon.species;
+                    }
+                },
+                displayEnemyHeldItem() {
+                    if (this.mapper.properties.battle.enemyPokemon.heldItem.value === null) {
+                        return 'None';
+                    } else {
+                        return this.mapper.properties.battle.enemyPokemon.heldItem;
+                    }
+                },
+                displayEnemyMove1() {
+                    if (this.mapper.properties.battle.enemyPokemon.move1.value === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.battle.enemyPokemon.move1;
+                    }
+                },
+                displayEnemyMove2() {
+                    if (this.mapper.properties.battle.enemyPokemon.move2.value === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.battle.enemyPokemon.move2;
+                    }
+                },
+                displayEnemyMove3() {
+                    if (this.mapper.properties.battle.enemyPokemon.move3.value === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.battle.enemyPokemon.move3;
+                    }
+                },
+                displayEnemyMove4() {
+                    if (this.mapper.properties.battle.enemyPokemon.move4.value === null) {
+                        return '';
+                    } else {
+                        return this.mapper.properties.battle.enemyPokemon.move4;
+                    }
+                },
+                displayEnemyMove1pp() {
+                    if (this.mapper.properties.battle.enemyPokemon.move1.value === null) {
+                        return '';
+                    } else {
+                        return this.ppFixer(this.mapper.properties.battle.enemyPokemon.move1pp);
+                    }
+                },
+                displayEnemyMove2pp() {
+                    if (this.mapper.properties.battle.enemyPokemon.move2.value === null) {
+                        return '';
+                    } else {
+                        return this.ppFixer(this.mapper.properties.battle.enemyPokemon.move2pp);
+                    }
+                },
+                displayEnemyMove3pp() {
+                    if (this.mapper.properties.battle.enemyPokemon.move3.value === null) {
+                        return '';
+                    } else {
+                        return this.ppFixer(this.mapper.properties.battle.enemyPokemon.move3pp);
+                    }
+                },
+                displayEnemyMove4pp() {
+                    if (this.mapper.properties.battle.enemyPokemon.move4.value === null) {
+                        return '';
+                    } else {
+                        return this.ppFixer(this.mapper.properties.battle.enemyPokemon.move4pp);
+                    }
+                },
+                displayEnemyTrainerName() {
+                    //console.log(this.enemyName);
+                    // if(this.mapper.properties.battle.trainer.class == "NOBODY") {return "Wild Pokemon"};
+                    // if(this.mapper.properties.battle.mode=="Trainer" && this.midFight == false && this.mapper.properties.battle.textBuffer.value != null) {
+                    //     const regex = new RegExp(`\\b${this.mapper.properties.battle.textBuffer.value}\\b`);
+                    //     if(!this.mapper.properties.battle.trainer.class.includes(this.mapper.properties.battle.textBuffer.value)) {
+                            // this.enemyName = this.mapper.properties.battle.trainer.class + " " + this.mapper.properties.battle.textBuffer.value;
+                            // console.log(this.enemyName);
+                    //     }
+                    // }
+                    //console.log(this.enemyName);
+
+                    return this.enemyName;
+                    //return (this.mapper.properties.battle.trainer.class + " " + this.mapper.properties.battle.trainer.name);
+                },
+                isBattle() {
+                    if(((this.mapper.properties.battle.battleStart.value == 1|| this.midFight == true) && this.mapper.properties.battle.mode.value !=null)) {this.midFight = true;}
+                    if(this.mapper.properties.battle.mode.value == null) {this.midFight = false;}
+                    return (this.midFight);
+                },
+                getEnemyPokemonImageSource() {
+                    const pokedexNumber = this.mapper.properties.battle.enemyPokemon.pokedexNumber.value;
+                    let output = 'sprites/Spr_2c_'; 
+                    if(pokedexNumber<100) { output += '0';}
+                    if(pokedexNumber<10) {output +='0';}
+                    output += pokedexNumber + ".png";
+                    return output;
+                }
+            },
+
+            watch: {
+                route1(newProp) {
+                    if (newProp == false && this.mapper.properties.overworld.mapGroup.value == "NEW BARK" && this.mapper.properties.overworld.mapNumber.value==3) {
+                        this.mapper.properties.overworld.encounterRate.night.setBytes([0x00], false) }
+                    //if (newProp == true && this.mapper.properties.overworld.map.value == "Route 1") { this.mapper.properties.overworld.encounterRate.set(25, false) }
+                },  
+                
+            },
+
+            mounted: async function () {
+                const that = this
+
+                // Setup the GameHook client, and configure it to
+                //Show and hide the UI based off of the ready state.
+                this.mapper = new GameHookMapperClient()
+                this.mapper.onConnected = (x) => this.ready = true
+                this.mapper.onDisconnected = (x) => this.ready = false
+
+                //establish the connection to GameHook.
+                await this.mapper.connect()
+                 // You can listen for properties to change like this
+                // after the connection has been established.
+                // this.mapper.properties.overworld.loadedMap.change(async(x) => {
+                // console.info(`Entered ${x.value || "a new map"} -- setting all encounters.`)});
+                
+
+                // const setStartingStats = async () => {
+                //     const perfectDVs = 0xff
+
+                //     await Promise.all([
+                //         await this.mapper.properties.player.team[0].dvAttack.setBytes([perfectDVs], true),
+                //         await this.mapper.properties.player.team[0].dvSpeed.setBytes([perfectDVs], true),
+                //     ])
+                // }
+
+                // const setWildEncounters = async() => {
+                //     const off 0x00
+                //     const species = 0x14
+
+                //     await Promise.all([
+                //     await mapper.properties.overworld.encounterRate.setBytes([off], true),
+                //     ])
+                //}
+                this.updateEmbeddedSection();
+                this.mapper.properties.player.team[0].species.change(async(x) => {
+                    this.updateEmbeddedSection();
+                });
+
+                // this.mapper.properties.player.team[0].species.change(async(x) => {
+                //     console.log("changed lead");
+                    
+                //     let targetURL =  'https://bulbapedia.bulbagarden.net/wiki/' + this.mapper.properties.player.team[0].species + '_(Pokémon)/Generation_II_learnset';
+                //     console.log(targetURL);
+                //     fetch(targetURL)
+                //     .then(response => response.text())
+                //     .then(data => {
+                //         let levelingUpSection = data.match(/<span class="mw-headline" id="By_leveling_up">By <a href="\/wiki\/Level" title="Level">leveling up<\/a><\/span>([\s\S]*?)<h4><span class="mw-headline" id="By_a_prior_evolution">/);
+                //         if (levelingUpSection) {
+                //             console.log(levelingUpSection);
+                //         let modifiedSection = levelingUpSection[1].replace(/href="\/wiki/g, 'href="https://bulbapedia.bulbagarden.net/wiki');
+                //         let pattern1 = /<th width="60%" style="line-height:30px;"><big><big><big>Generation II<\/big><\/big>[\S\s\n]*?(?=\n<\/th><\/tr><\/tbody><\/table>\n<\/td)/
+
+                //         let modifiedSection2 = modifiedSection.replace(pattern1, '');
+                //         let pattern2 = /<ul><li><b>Bold<\/b> indicates[\S\s]*<\/li><\/ul>/;
+                //         modifiedSection2 = modifiedSection2.replace(pattern2,'');
+                //         console.log(modifiedSection2);
+                //         this.embeddedSection = modifiedSection2; // Update the data property
+                //         }
+                //     })
+                //     .catch(error => {
+                //         console.error('Error fetching content:', error);
+                //     });
+                // });
+
+                // Get a reference to the dropdown element
+                const dropdown = document.getElementById("changeHiddenPower");
+
+                // Add an event listener to the dropdown to watch for changes
+                dropdown.addEventListener("change", async function(event) {
+                    const selectedValue = dropdown.value;
+                    // Do something with the selected value
+                    // console.log("Selected value:", selectedValue);
+                    // You can call your update function here or perform any other actions
+                    //document.getElementById ("setDay").myParam = this.mapper;
+                    await setHiddenPower(event);
+                });
+                document.getElementById ("changeHiddenPower").myParam = this.mapper;
+
+
+
+                // const dv = 255
+                // this.mapper.properties.player.team[0].dvAttack.setBytes([dv],true)
+                // this.mapper.properties.player.team[0].dvSpeed.setBytes([dv],true)
+
+                document.getElementById ("setStarter").addEventListener ("click", setStarter, false);
+                function setStarter() {
+                    var starter = document.getElementById("starter").value;
+                    document.getElementById("startingPokemon").innerHTML = starter;
+                    //document.getElementById("portrait").src="sprites/Spr_2c_0+";
+                }
+
+                document.getElementById ("setDay").addEventListener ("click", setDay, false);
+                document.getElementById ("setDay").myParam = this.mapper;
+                function setDay(evt) {
+                    var day = document.getElementById("changeDay").value;
+                    setTime(day,18,evt.currentTarget.myParam);
+                }
+                setHiddenPowerM(this.mapper);
+                this.mapper.properties.player.team[0].dvAttack.change(async(x) => {setHiddenPowerM(this.mapper);})
+                this.mapper.properties.player.team[0].dvDefense.change(async(x) => {setHiddenPowerM(this.mapper);})
+                this.mapper.properties.player.team[0].dvSpeed.change(async(x) => {setHiddenPowerM(this.mapper);})
+                this.mapper.properties.player.team[0].dvSpecial.change(async(x) => {setHiddenPowerM(this.mapper);})
+
+                //document.getElementById ("setHiddenPower").addEventListener ("click", setHiddenPower, false);
+                //document.getElementById ("setHiddenPower").myParam = this.mapper;
+                async function setHiddenPower(event){
+                    var type = document.getElementById("changeHiddenPower").value;
+                    var atk = 15;
+                    var def = 15;
+                    var spd = 15;
+                    var spe = 15;
+                    // console.log(type);
+                    switch (type){
+                        case "Bug": atk=13; def=13; break;
+                        case "Dark": atk = 15; def = 15; break;
+                        case "Dragon": atk = 15; def = 14; break;
+                        case "Electric": atk=14; def = 15; break;
+                        case "Fighting": atk=12; def=12; break;
+                        case "Fire": atk=14; def=12; break;
+                        case "Flying": atk = 12; def = 13; break;
+                        case "Ghost": atk = 13; def = 14; break;
+                        case "Grass": atk = 14; def = 14; break;
+                        case "Ground": atk = 12; def = 15; break;
+                        case "Ice": atk = 15; def = 13; break;
+                        case "Poison": atk = 12; def = 14; break;
+                        case "Psychic": atk = 15; def = 12; break;
+                        case "Rock": atk= 13; def = 12; break;
+                        case "Steel": atk = 13; def = 15; break;
+                        case "Water": atk = 14; def = 13; break;
+                        case "Perfect": atk = 15; def = 15; spd = 15; spe = 15; break;
+                        case "Minimum": atk = 0; def = 0; spd = 0; spe = 0; break;
+                        default: atk = 15; def = 15; spd = 0; spe = 0; break;
+                    }
+                    var mapper = event.currentTarget.myParam;
+                    await setDVs(atk, def, spd, spe, mapper);
+
+                }
+
+                async function setHiddenPowerM(mapper){
+                    var type = document.getElementById("changeHiddenPower").value;
+                    var atk = 15;
+                    var def = 15;
+                    var spd = 15;
+                    var spe = 15;
+                    // console.log(type);
+                    switch (type){
+                        case "Bug": atk=13; def=13; break;
+                        case "Dark": atk = 15; def = 15; break;
+                        case "Dragon": atk = 15; def = 14; break;
+                        case "Electric": atk=14; def = 15; break;
+                        case "Fighting": atk=12; def=12; break;
+                        case "Fire": atk=14; def=12; break;
+                        case "Flying": atk = 12; def = 13; break;
+                        case "Ghost": atk = 13; def = 14; break;
+                        case "Grass": atk = 14; def = 14; break;
+                        case "Ground": atk = 12; def = 15; break;
+                        case "Ice": atk = 15; def = 13; break;
+                        case "Poison": atk = 12; def = 14; break;
+                        case "Psychic": atk = 15; def = 12; break;
+                        case "Rock": atk= 13; def = 12; break;
+                        case "Steel": atk = 13; def = 15; break;
+                        case "Water": atk = 14; def = 13; break;
+                        case "Perfect": atk = 15; def = 15; spd = 15; spe = 15; break;
+                        case "Minimum": atk = 0; def = 0; spd = 0; spe = 0; break;
+                        default: atk = 15; def = 15; spd = 0; spe = 0; break;
+                    }
+                    await setDVs(atk, def, spd, spe, mapper);
+
+                }
+
+                async function setDVs(attack, defense, speed, special, mapper) {
+                    var atkdef = attack * 16 + defense;
+                    var spdspe = speed * 16 + special;
+                    await Promise.all([
+                        mapper.properties.player.team[0].dvAttack.freeze(false),
+                        mapper.properties.player.team[0].dvDefense.freeze(false),
+                        mapper.properties.player.team[0].dvSpeed.freeze(false),
+                        mapper.properties.player.team[0].dvSpecial.freeze(false),
+                    ]);
+                    await Promise.all([
+                        mapper.properties.player.team[0].dvAttack.setBytes([atkdef], false),
+                        mapper.properties.player.team[0].dvDefense.setBytes([atkdef], false),
+                        mapper.properties.player.team[0].dvSpeed.setBytes([spdspe], false),
+                        mapper.properties.player.team[0].dvSpecial.setBytes([spdspe], false)
+                    ]);
+                }
+
+
+                this.mapper.properties.battle.battleStart.change(async(x) => {
+                    let buff = this.mapper.properties.battle.textBuffer.value;
+                    console.log(buff)
+                    if(!this.mapper.properties.battle.trainer.class.value.includes(buff)) {
+                        this.enemyName = this.mapper.properties.battle.trainer.class + " " + buff;
+                    }
+                    else {
+                        this.enemyName = this.mapper.properties.battle.trainer.class;
+                    }
+                    console.log("Fighting: "+ this.enemyName)
+                })
+
+
+                var imgsrc = "sprites/Spr_2c_";
+                var dexNum = this.mapper.properties.player.team[0].pokedexNumber.value;
+                
+                if(dexNum==0||dexNum==undefined||dexNum==null){
+                    dexNum=245;//default to suicune
+                }
+                if(dexNum < 100) {
+            
+                    imgsrc = imgsrc + "0";
+                }
+                if(dexNum < 10) {
+                    imgsrc = imgsrc + "0";
+                }
+                imgsrc = imgsrc + dexNum + ".png";
+                document.getElementById("portrait").src=imgsrc;
+            
+                
+                var leadPokemon;
+
+                this.mapper.properties.player.team[0].species.change(async(x) => {
+                    setTimeout(() => { //delay so gamehook can update
+                        
+                        var lead = this.mapper.properties.player.team[0].species;
+                        document.getElementById("startingPokemon").innerHTML = lead;
+                        var imgsrc = "sprites/Spr_2c_";
+                        if(this.mapper.properties.player.team[0].pokedexNumber.value!=null) {
+                            dexNum = this.mapper.properties.player.team[0].pokedexNumber.value;
+                        }
+                        if(dexNum < 100) {
+                        
+                            imgsrc = imgsrc + "0";
+                        }
+                        if(dexNum < 10) {
+                            imgsrc = imgsrc + "0";
+                        }
+                        imgsrc = imgsrc + dexNum + ".png";
+                        document.getElementById("portrait").src=imgsrc;
+                    }, 3);
+                });
+
+                // Solving the trash can puzzle ----------------------------------------------------------------------------------------------//
+                // const trashCans = async () => {
+                //     const solved = 0x03 //0x03 finds first can and solves the puzzle, leaves all trainers battlable
+                //     if (this.mapper.properties.events.trashCanPuzzle.bytes < 3) //check to see if the puzzle is unsolved
+                //         await Promise.all([
+                //             await this.mapper.properties.events.trashCanPuzzle.setBytes([solved], false), //don't freeze this property
+                //         ])
+                // }
+                //Whenever the player moves to a different map
+                /*this.mapper.properties.overworld.map.change(async (x) => {
+                    await trashCans() //Solve the trash can puzzle if it isn't already solved
+                })*/
+                //var level = this.mapper.properties.player.team[0].level
+                    //let nextLvlXp = Math.floor(6 / 5 * level ^ 3 - 15 * level ^ 2 + 100 * n - 140)
+                    //console.log('xp:'+ nextLvlXp)
+                    //document.getElementById("expToNext").innerHTML = "F";
+                /*this.mapper.properties.player.team[0].expPoints.change(async () => {
+                    var level = parseInt(this.mapper.properties.player.team[0].level)
+                    var xp = parseInt(this.mapper.properties.player.team[0].expPoints)
+                    let nextLevel=level+1;
+
+                    // Medium Slow Formula
+                     let curLevelXp = Math.floor(6 / 5 * Math.pow(level, 3) - 15 * Math.pow(level, 2) + 100 * level - 140)
+                     let nextLevelXp = Math.floor(6 / 5 * Math.pow(nextLevel, 3) - 15 * Math.pow(nextLevel, 2) + 100 * nextLevel - 140)
+
+                    // Medium Fast Formula
+                    //let curLevelXp = Math.floor(Math.pow(level, 3))
+                    //let nextLevelXp = Math.floor(Math.pow(nextLevel,3))
+
+                    // Slow Formula
+                    // let curLevelXp = Math.floor(5 * Math.pow(level, 3) / 4)
+                    // let nextLevelXp = Math.floor(5 * Math.pow(nextlevel, 3) / 4)
+
+
+                    let thisLevelXp = nextLevelXp - curLevelXp
+                    let percent = (xp - curLevelXp) / (nextLevelXp - curLevelXp)
+                    while(percent >= 1)
+                    {
+                        percent = percent - 1;
+                    }
+                    percent = Math.round(percent * 1000)/10
+                    
+                    //console.log('curlevelxp: ' + curLevelXp)
+                    //console.log('nextLevel: '+nextLevel)
+                    //console.log('xp:'+ xp + 'nextlevelxp:' + nextLevelXp + "progress:" + percent)
+                    
+                    document.getElementById("expToNext").innerHTML = percent + "%";
+                })*/
+
+
+                /*const nerfEncounters = async () => {
+                    const rate = 0x00
+                    
+                    if (this.mapper.properties.overworld.map == "Route 1" || this.mapper.properties.overworld.map == "Viridian Forest" || this.mapper.properties.overworld.map == "Mt Moon - 1"|| this.mapper.properties.overworld.map == "Route 2" || this.mapper.properties.overworld.map == "Mt Moon - 2" || this.mapper.properties.overworld.map == "Mt Moon - 3"){
+                        await Promise.all([
+                                
+                                await this.mapper.properties.overworld.encounterRate.setBytes([rate], false), //don't freeze this property
+                                // await delay(500),
+                                console.log("Adjusting rate to: "+this.mapper.properties.overworld.encounterRate.value),
+                            ])
+                    }
+                    else {                
+                        await Promise.all([
+                            console.log("not touching this map:-"+this.mapper.properties.overworld.map+"-")
+                        ])
+                    
+                    }
+                }*/
+
+                //set day of week dynamically based on location
+                var changeGroup = false;
+                this.mapper.properties.overworld.mapGroup.change(async () => {
+                    setTimeout(() => {
+                    //console.log("changed map to " + this.mapper.properties.battle.textBuffer.value + "- "+this.mapper.properties.overworld.mapGroup +":" + this.mapper.properties.overworld.mapNumber);
+                    }, 2); //delay so gamehook can update
+                    autoDayChange(this.mapper);
+                })
+
+                this.mapper.properties.overworld.mapNumber.change(async () => {
+                    setTimeout(() => {
+                    //console.log("changed map to " + this.mapper.properties.battle.textBuffer.value + "- "+this.mapper.properties.overworld.mapGroup +":" + this.mapper.properties.overworld.mapNumber);
+                    }, 2); //delay so gamehook can update
+                    autoDayChange(this.mapper);
+                })
+
+                const dayChanges = [
+                    //mapgroup, mapnumber, desired day of week
+                    //hej hej monica monday
+                    ["OLIVINE", 14, "Monday"],
+                    ["CIANWOOD", 15, "Monday"],
+                    ["CIANWOOD", 2, "Monday"],
+
+                    //tuscany tuesday
+                    ["NEW BARK", 4, "Tuesday"],
+                    ["NEW BARK", 13, "Tuesday"],
+                    ["CHERRYGROVE", 3, "Tuesday"],
+                    //wednesday guy, not implemented yet because rare candy
+                    //thursday arthur
+                    ["VIOLET", 2, "Thursday"],
+                    ["VIOLET", 16, "Thursday"],
+                    ["VIOLET", 5, "Thursday"],
+
+                    //friday frieda
+                    ["VIOLET", 13, "Friday"],
+                    ["DUNGEONS", 37, "Friday"],
+
+                    //saturday santos
+                    ["DUNGEONS", 61, "Saturday"],
+                    ["BLACKTHORN", 6, "Saturday"],
+                    ["BLACKTHORN", 3, "Saturday"],
+                    ["BLACKTHORN", 1, "Saturday"],
+                    ["DUNGEONS", 80, "Saturday"],
+
+                    //sunny sunday
+                    ["VIOLET", 3, "Sunday"],
+                    ["ECRUTEAK", 9, "Sunday"],
+
+                    //rival rematch
+                    ["INDIGO", 1, "Wednesday"],
+                    ["INDIGO", 2, "Wednesday"],
+                    //ss aqua olivine
+                    ["FAST SHIP", 8, "Friday"],
+                    //ss aqua vermillion 
+                    ["FAST SHIP", 9, "Sunday"],
+                    //return and haircut
+                    ["DUNGEONS", 54, "Sunday"],
+                    ["GOLDENROD",17, "Sunday"],
+                    ["GOLDENROD",14, "Sunday"],
+                    //move tutor, walk into the game corner
+                    ["GOLDENROD", 19, "Saturday"]
+
+
+
+                ]
+
+                async function autoDayChange(mapper) {
+                    
+                
+                    let group = mapper.properties.overworld.mapGroup;
+                    let number = mapper.properties.overworld.mapNumber;
+                    for (let i = 0; i < dayChanges.length; i++) {
+                        //console.log(dayChanges[i][0] + " " + group + " "+ dayChanges[i][1]+ " " + number);
+                        if(dayChanges[i][0] == group && dayChanges[i][1] == number) {
+                            //console.log("Changing day to " + dayChanges[i][2]);
+                            setTime(dayChanges[i][2],mapper.properties.time.current.hour.value,mapper);
+                            break; 
+                        }
+                    }
+
+                    
+                }
+
+                function setTime(day, hour, mapper) {
+                    //present time = start time + rtc
+                    //start time = desired present time - rtc
+                    var outday = numberToDay((dayToNumber(day) - mapper.properties.time.rtc.day.value)%7);
+                    
+                    var outhour = (((hour - mapper.properties.time.rtc.hour.value)%24)+24)%24;
+                    
+                    //console.log(outhour);
+                    //outhour++;
+                    //console.log(outhour + " " + mapper.properties.time.rtc.hour.value);
+                    //console.log(outday);
+                    outhour = ((outhour-1)%24+24)%24;
+
+                    if(outhour+mapper.properties.time.rtc.hour.value > 24) {
+                        //console.log("yes");
+                        
+                        outday = numberToDay(dayToNumber(outday)-1);
+                    }
+                    //console.log(outday);
+
+                    //console.log(outhour);
+                    
+                    //console.log("before: " +mapper.properties.time.start.day)
+                    
+                    mapper.properties.time.start.day.set(outday, false);
+                    //console.log("after: " +mapper.properties.time.start.day)
+                    //console.log("outhour: " + outhour);
+                    mapper.properties.time.start.hour.set(outhour, false);
+                    mapper.properties.time.start.minute.set(60-mapper.properties.time.rtc.minute, false);
+                    return;
+                }
+                //setTime("Tuesday",2,this.mapper);
+                //this.mapper.properties.time.start.day.set("Sunday", false);
+                function dayToNumber(day)
+                {
+                    if(day==="Sunday") {return 0;}
+                    if(day==="Monday") {return 1;}
+                    if(day==="Tuesday") {return 2;}
+                    if(day==="Wednesday") {return 3;}
+                    if(day==="Thursday") {return 4;}
+                    if(day==="Friday") {return 5;}
+                    if(day==="Saturday") {return 6;}
+                    return 0;
+                }
+
+                function numberToDay(num)
+                {
+                    num = ((num % 7)+7)%7;
+                    if(num===0) {return "Sunday";}
+                    if(num===1) {return "Monday";}
+                    if(num===2) {return "Tuesday";}
+                    if(num===3) {return "Wednesday";}
+                    if(num===4) {return "Thursday";}
+                    if(num===5) {return "Friday";}
+                    if(num===6) {return "Saturday";}
+                    return 0;
+                }
+
+                //stopwatch functions
+                let startTime;
+                let running = false;
+
+                function updateStopwatchDisplay() {
+                    const currentTime = new Date().getTime() - startTime;
+                    const hours = Math.floor(currentTime / 3600000);
+                    const minutes = Math.floor((currentTime % 3600000) / 60000);
+                    const seconds = Math.floor((currentTime % 60000) / 1000);
+                    const milliseconds = currentTime % 1000;
+
+                    const displayTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    const displayMilliseconds = `.${String(milliseconds).padStart(3, '0')}`;
+                    
+                    document.getElementById('stopwatch').textContent = displayTime;
+                    document.getElementById('milliseconds').textContent = displayMilliseconds;
+
+                    if (running) {
+                        requestAnimationFrame(updateStopwatchDisplay);
+                    }
+                    }
+
+                function startStop() {
+                    if (running) {
+                        running = false;
+                        // document.getElementById('startStopButton').textContent = 'Start';
+                    } else {
+                        running = true;
+                        startTime = new Date().getTime();
+                        // document.getElementById('startStopButton').textContent = 'Stop';
+                        updateStopwatchDisplay();
+                    }
+                }
+
+                function resetStopwatch() {
+                    running = false;
+                    // document.getElementById('startStopButton').textContent = 'Start';
+                    document.getElementById('stopwatch').textContent = '00:00:00';
+                    document.getElementById('milliseconds').textContent = '.000';
+                }
+
+
+                var playerId = this.mapper.properties.player.playerId.value;
+                // console.log(this.mapper.properties.player.playerId.value);
+                this.mapper.properties.player.playerId.change(async () => {
+                    setTimeout(() => {
+                        if(this.mapper.properties.player.playerId.value!=0 && this.mapper.properties.player.playerId.value !=playerId) {
+                        // console.log("start");
+                        playerId = this.mapper.properties.player.playerId.value;
+                        //new game
+                        resetStopwatch();
+                        startStop();
+                    }
+                    //console.log("changed map to " + this.mapper.properties.battle.textBuffer.value + "- "+this.mapper.properties.overworld.mapGroup +":" + this.mapper.properties.overworld.mapNumber);
+                    }, 2); //delay so gamehook can update
+                    
+                })
+
+                this.mapper.properties.audio.channel1MusicID.change(async () => {
+                    setTimeout(() => {
+                        if(this.mapper.properties.audio.channel1MusicID == 6400 && this.mapper.properties.battle.trainer.class== "RED")
+                        {
+                            console.log("You beat the game! Beat Red.");
+                            startStop();
+                        }
+                    }, 2); //delay so gamehook can update
+                })
+
+
+                this.mapper.properties.options.textSpeed2.change(async () => {
+                    setOptions(this.mapper);
+                })
+                
+                setOptions(this.mapper);
+                async function setOptions(mapper) {
+                    // console.log("setting options")
+                    let bytes = 0xE1;
+                    mapper.properties.options.textSpeed2.setBytes([bytes],false);
+                    mapper.properties.options.textSpeed3.setBytes([bytes],false);
+
+                }
+
+                //encounters
+
+                // Encounters (set initial value)
+                // if (this.route1 == false && this.mapper.properties.overworld.map.value == "Route 1") {
+                //     this.mapper.properties.overworld.encounterRate.setBytes([0x00], false) 
+                // }
+                // else if (this.viridianForest == false && this.mapper.properties.overworld.map.value == "Viridian Forest") {
+                //     this.mapper.properties.overworld.encounterRate.setBytes([0x00], false) 
+                // }
+
+                const encounters = [
+                    //name, mapGroup, mapNumber, morning, day, night, water
+                    ["Route 29", "NEW BARK", 3, 25, 25, 25, 0],
+                    ["Route 30", "CHERRYGROVE", 1, 25, 25, 25, 5],
+                    ["Route 31", "CHERRYGROVE", 2, 25, 25, 25, 5],
+                    ["Sprout Tower", "DUNGEONS", 2, 5, 5, 5, 0],
+                    ["Sprout Tower", "DUNGEONS", 3, 5, 5, 5, 0],
+                    ["Route 32", "VIOLET", 1, 25, 25, 25, 15],
+                    ["Union Cave", "DUNGEONS", 37, 15, 15, 15, 5],
+                    ["Union Cave", "DUNGEONS", 38, 15, 15, 15, 5],
+                    ["Route 34", "GOLDENROD", 1, 25, 25, 25, 15],
+                    ["Route 36", "VIOLET", 3, 25, 25, 25, 0],
+                    ["Route 37", "VIOLET", 4, 25, 25, 25, 0],
+                    ["Route 35", "VIOLET", 2, 25, 25, 25, 10],
+                    ["Ilex Forest", "DUNGEONS", 52, 10, 10, 10, 5],
+                    ["Slowpoke Well", "DUNGEONS", 40, 5, 5, 5, 5],
+                    ["Mt. Mortar", "DUNGEONS", 57, 15, 15, 15, 10],
+                    ["Mt. Mortar", "DUNGEONS", 58, 15, 15, 15, 0],
+                    ["Mt. Mortar", "DUNGEONS", 59, 15, 15, 15, 5],
+                    ["Route 38", "OLIVINE", 12, 25, 25, 25, 0],
+                    ["Route 40", "CIANWOOD", 1, 0, 0, 0, 15],
+                    ["Route 41", "CIANWOOD", 2, 0, 0, 0, 15],
+                    ["Route 41", "CIANWOOD", 3, 0, 0, 0, 15],
+                    ["Route 42", "MAHOGANY", 5, 25, 25, 25, 10],
+                    ["Burnt Tower", "DUNGEONS",13, 10, 10, 10, 0]
+                    ["Burnt Tower", "DUNGEONS",14, 15, 15, 15, 0]
+
+                    ["Whirl", "DUNGEONS", 66, 15, 15, 15, 0],
+                    ["Whirl", "DUNGEONS", 67, 15, 15, 15, 0],
+                    ["Whirl", "DUNGEONS", 68, 15, 15, 15, 10],
+                    ["Whirl", "DUNGEONS", 69, 15, 15, 15, 0],
+                    ["Whirl", "DUNGEONS", 70, 15, 15, 15, 0],
+                    ["Whirl", "DUNGEONS", 71, 15, 15, 15, 0],
+                    ["Whirl", "DUNGEONS", 72, 15, 15, 15, 10],
+                    ["Whirl", "DUNGEONS", 73, 15, 15, 15, 10],
+                    ["Route 43", "LAKE OF RAGE", 5, 25, 25, 25, 5],
+                    ["Route 44", "MAHOGANY", 6, 25, 25, 25, 5],
+                    ["Lake of Rage", "LAKE OF RAGE", 6, 0, 0, 0, 15],
+                    ["Ice Path", "DUNGEONS", 61, 5, 5, 5, 0],
+                    ["Ice Path", "DUNGEONS", 62, 5, 5, 5, 0],
+                    ["Ice Path", "DUNGEONS", 63, 5, 5, 5, 0],
+                    ["Ice Path", "DUNGEONS", 64, 5, 5, 5, 0],
+                    ["Ice Path", "DUNGEONS", 65, 5, 5, 5, 0],
+                    ["Dragon's Den", "DUNGEONS", 81, 0, 0, 0, 10],
+                    ["Blackthorn City", "BLACKTHORN", 10, 0, 0, 0, 10],
+                    ["Route 27", "NEW BARK", 2, 25, 25, 25, 15],
+                    ["Route 27", "NEW BARK", 4, 25, 25, 25, 15],
+                    ["Tohjo Falls", "DUNGEONS", 83, 15, 15, 15, 10],
+                    ["Route 26", "NEW BARK", 1, 25, 25, 25, 15],
+                    ["Victory Road", "DUNGEONS", 91, 15, 15, 15, 0],
+                    ["Route 1", "PALLET", 1, 25, 25, 25, 0],
+                    ["Route 2", "VIRIDIAN", 1, 25, 25, 25, 0],
+                    ["Diglett's Cave", "DUNGEONS", 84, 10, 5, 20, 0],
+                    ["Mt. Moon", "DUNGEONS", 85, 15, 15, 15, 0],
+                    ["Route 10", "CERULEAN", 14, 25, 25, 25, 10],
+                    ["Route 9", "CERULEAN", 13, 25, 25, 25, 10],
+                    ["Rock Tunnel", "DUNGEONS", 87, 25, 25, 25, 10],
+                    ["Rock Tunnel", "DUNGEONS", 88, 15, 15, 15, 0],
+                    ["Route 6", "VERMILION", 1, 25, 25, 25, 5],
+                    ["Route 19", "CINNABAR", 5, 0, 0, 0, 15],
+                    ["Route 20", "CINNABAR", 6, 0, 0, 0, 15],
+                    ["Route 20", "CINNABAR", 8, 0, 0, 0, 15],
+                    ["Route 21", "CINNABAR", 7, 15, 15, 15, 15],
+                    ["Route 22", "VIRIDIAN", 2, 25, 25, 25, 5],
+                    ["Route 28", "SILVER", 1, 25, 25, 25, 5],
+                    ["Mt. Silver", "SILVER", 2, 25, 25, 25, 5],
+                    ["Mt. Silver", "DUNGEONS", 74, 15, 15, 15, 0],
+                    ["Mt. Silver", "DUNGEONS", 75, 15, 15, 15, 5],
+                    ["Mt. Silver", "DUNGEONS", 76, 15, 15, 15, 0],
+                    ["Mt. Silver", "DUNGEONS", 77, 15, 15, 15, 0],
+                ]
+
+                const nerfEncounters = async () => {
+                    const rate = 0x00
+                    // console.log(this.checkedRoutes);
+                    // let morn = this.mapper.encounterRate.morning.value;
+                    // let day = this.mapper.encounterRate.day.value;
+                    // let night = this.mapper.
+                    let group = this.mapper.properties.overworld.mapGroup.value;
+                    let number = this.mapper.properties.overworld.mapNumber.value;
+                    for(let i = 0; i < encounters.length; i++) {
+                        // console.log("yes");
+                    //if (this.mapper.properties.overworld.map == "Route 1" || this.mapper.properties.overworld.map == "Viridian Forest" || this.mapper.properties.overworld.map == "Mt Moon - 1"|| this.mapper.properties.overworld.map == "Route 2" || this.mapper.properties.overworld.map == "Mt Moon - 2" || this.mapper.properties.overworld.map == "Mt Moon - 3"){
+                        // console.log(group + encounters[i][1] + number + encounters[i][2])
+                        if (group == encounters[i][1] && number == encounters[i][2] && !document.getElementById(encounters[i][0]).checked) {
+                            // console.log(this.frozenEncounters);
+                            await Promise.all([
+                                
+                                await this.mapper.properties.encounterRate.morning.setBytes([rate], false),
+                                await this.mapper.properties.encounterRate.day.setBytes([rate], false),
+                                await this.mapper.properties.encounterRate.night.setBytes([rate], false),
+                                await this.mapper.properties.encounterRate.water.setBytes([rate], false),
+                                // await delay(500),
+                                //console.log("Adjusting rate to: "+this.mapper.properties.encounterRate.morning.value),
+                            ])
+                        }
+                        
+                    }
+                }
+                nerfEncounters();
+                this.mapper.properties.encounterRate.morning.change(async () => {
+                    //console.log("You changed maps")
+                    // await delay(500)
+                    await nerfEncounters(); //
+                })
+                this.mapper.properties.encounterRate.water.change(async () => {
+                    //console.log("You changed maps")
+                    // await delay(500)
+                    await nerfEncounters(); //
+                })
+
+                function capitalizeFirstLetter(str) {
+                    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+                }
+
+                this.mapper.properties.overworld.mapNumber.change(async () => {
+                    // setTimeout(() => { //delay so gamehook can update
+                    //     /*console.log('["' + capitalizeFirstLetter(this.mapper.properties.battle.textBuffer.value) + '", "' +
+                    //     this.mapper.properties.overworld.mapGroup.value + '", ' + this.mapper.properties.overworld.mapNumber.value + ", " +
+                    //     this.mapper.properties.encounterRate.morning + ", " + this.mapper.properties.encounterRate.day + ", "+
+                    //     this.mapper.properties.encounterRate.night + ", " + this.mapper.properties.encounterRate.water + "],");*/
+                    //     // await delay(500)
+                    // }, 100);
+
+                    await nerfEncounters(); //
+                })
+
+                this.mapper.properties.overworld.mapGroup.change(async () => {
+                    // console.log("You changed maps")
+                    // await delay(500)
+                    await nerfEncounters(); //
+                })
+
+                var enc = document.getElementById("encounterChecks");
+                enc.oninput = function() {
+                    //console.log(enc.children)
+                    nerfEncounters(); 
+                }
+
+                const checkboxes = document.querySelectorAll('#encounterChecks input[type="checkbox"]');
+
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        const checkboxId = checkbox.id;
+                        const checkboxValue = checkbox.checked;
+
+                        // Save checkbox value to localStorage
+                        localStorage.setItem(checkboxId, checkboxValue);
+                    });
+
+                    // Load checkbox values from localStorage when the page loads
+                    const savedCheckboxValue = localStorage.getItem(checkbox.id);
+                    if (savedCheckboxValue !== null) {
+                        checkbox.checked = savedCheckboxValue === 'true';
+                    }
+                });
+
+
+                // const forceSpearow = async () => {
+                //     const flier = 0x05  //spearow
+                //     if (this.mapper.properties.overworld.map == "Route 3") {
+                //             await Promise.all([
+                //                 console.log("Route 3"),
+                //                 await this.mapper.properties.overworld.encounters.common[2].pokemon.setBytes([flier], false),
+                //                 await this.mapper.properties.overworld.encounters.common[4].pokemon.setBytes([flier], false),
+                //                 await this.mapper.properties.overworld.encounters.uncommon[1].pokemon.setBytes([flier], false),
+                //                 await this.mapper.properties.overworld.encounters.uncommon[2].pokemon.setBytes([flier], false),
+                //                 await this.mapper.properties.overworld.encounters.uncommon[3].pokemon.setBytes([flier], false)
+                //             ])
+                //         }
+                // }
+
+
+
+                /*const delay = ms => new Promise(res => setTimeout(res, ms));
+                this.mapper.properties.overworld.encounters.common[2].pokemon.change(async (x) => {
+                    console.log("Spearow time")
+                    await forceSpearow()
+
+
+                })*/
+                
+
+                /*this.mapper.properties.overworld.encounterRate.change(async (x) => {
+                    console.log("You changed maps")
+                    // await delay(500)
+                    await forceSpearow()
+                    await nerfEncounters() //
+                })*/
+
+                // this.mapper.properties.player.money.onChanged = (x) => {
+                //     console.info(`Your money changed to ${x.value}!`)
+                // }
+
+                // this.mapper.properties.player.team[0].dvAttack.onChanged = async (x) => {
+                //     console.info(`Setting Attack and Defense DVs to 15.`)
+                //     await setStartingStats()
+                // }
+                // this.mapper.properties.player.team[0].dvSpeed.onChanged = async (x) => {
+                //     console.info(`Setting Speed and Special DVs to 15.`)
+                //     await setStartingStats()
+                // }
+            },
+
+        }).mount('#app')
+    </script>
+</body>
