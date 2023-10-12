@@ -226,10 +226,10 @@
             <span id="enemyTrainer" >{{ displayEnemyTrainerName }}</span>
         </h1></div>
         
-        <div><h1 class="framed" style="height: 80px; width:390px; padding-top:1px; margin-top:6px; margin-left:0px; text-align:center; background-color: white;">
+        <div><h1 class="framed" style="height: 80px; width:390px; padding-top:1px; margin-top:4px; margin-left:0px; text-align:center; background-color: white;">
             <span id="enemyPokemon" style="font-size:75%;"> &ensp;{{ displayEnemyPokemonName }}</span><!--{{ mapper.properties.player.team[0].species }}--></h1></div>
         <!-- Moveset -->
-        <div class="framed" style="width:390px; margin-left:0px; height:110px; margin-top:16px; background-color: white; text-align:justify; text-justify:inter-word;">
+        <div class="framed" style="width:390px; margin-left:0px; height:110px; margin-top:6px; background-color: white; text-align:justify; text-justify:inter-word;">
             <table width="250px" align="left"  cellpadding="0" cellspacing="0" style="margin-top:-702px">
             <tr><td style="text-align: left;">{{ displayEnemyMove1}}</td><td style="text-align: right;">{{ displayEnemyMove1pp }}</td></tr><br>
             <tr><td style="text-align: left;">{{ displayEnemyMove2}}</td><td style="text-align: right;">{{ displayEnemyMove2pp }}</td></tr><br>
@@ -806,7 +806,7 @@
                 },
                 displayEnemyTrainerName() {
                     //console.log(this.enemyName);
-                    // if(this.mapper.properties.battle.trainer.class == "NOBODY") {return "Wild Pokemon"};
+                    if(this.mapper.properties.battle.mode == "Wild") {return "Wild Pokemon"};
                     // if(this.mapper.properties.battle.mode=="Trainer" && this.midFight == false && this.mapper.properties.battle.textBuffer.value != null) {
                     //     const regex = new RegExp(`\\b${this.mapper.properties.battle.textBuffer.value}\\b`);
                     //     if(!this.mapper.properties.battle.trainer.class.includes(this.mapper.properties.battle.textBuffer.value)) {
@@ -815,7 +815,9 @@
                     //     }
                     // }
                     //console.log(this.enemyName);
-
+                    // if(this.enemyName === "NOBODY") {
+                    //     return "WILD";
+                    // }
                     return this.enemyName;
                     //return (this.mapper.properties.battle.trainer.class + " " + this.mapper.properties.battle.trainer.name);
                 },
@@ -1039,7 +1041,12 @@
                         this.enemyName = this.mapper.properties.battle.trainer.class + " " + buff;
                     }
                     else {
+                        if(this.mapper.properties.battle.trainer.class.value == "NOBODY") {
+                            this.enemyName = "WILD";
+                        }
+                        else {
                         this.enemyName = this.mapper.properties.battle.trainer.class;
+                        }
                     }
                     console.log("Fighting: "+ this.enemyName)
                 })
