@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <meta charset=""utf-8">
+    <meta charset="utf-8">
     <title>Pokemon Overlay</title>
     <!-- <link rel="stylesheet" href="style.css"> -->
     <!-- <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700" rel="stylesheet"> -->
@@ -76,7 +76,7 @@
         <div v-else>
 
             <!-- Add content here! -->
-            <div><h1 class="framed" style="width:390px; text-align:right; font-size: 1em; height:80px; margin-top:0px; background-color: white;">
+            <div><h1 class="framed" style="width:390px; text-align:right; font-size: 1em; height:80px; margin-top:0px; background-color: white;" onclick="startStop()">
                 <span id="stopwatch" >00:00:00</span>
                 <span id="milliseconds">.000</span>
             </h1></div>
@@ -230,7 +230,7 @@
             <span id="enemyPokemon" style="font-size:75%;"> &ensp;{{ displayEnemyPokemonName }}</span><!--{{ mapper.properties.player.team[0].species }}--></h1></div>
         <!-- Moveset -->
         <div class="framed" style="width:390px; margin-left:0px; height:110px; margin-top:6px; background-color: white; text-align:justify; text-justify:inter-word;">
-            <table width="250px" align="left"  cellpadding="0" cellspacing="0" style="margin-top:-718px">
+            <table width="250px" align="left"  cellpadding="0" cellspacing="0" style="margin-top:-714px">
             <tr><td style="text-align: left;">{{ displayEnemyMove1}}</td><td style="text-align: right;">{{ displayEnemyMove1pp }}</td></tr><br>
             <tr><td style="text-align: left;">{{ displayEnemyMove2}}</td><td style="text-align: right;">{{ displayEnemyMove2pp }}</td></tr><br>
             <tr><td style="text-align: left;">{{ displayEnemyMove3}}</td><td style="text-align: right;">{{ displayEnemyMove3pp }}</td></tr><br>
@@ -339,8 +339,9 @@
     </div>
 
     <div style="background-color:white; height:1100; width:800;"></div>
-
-    <div class="framed" style="position: absolute; top:10%; left:40%; width:400px; background-color: white;">
+    <div class="framed" style="position: absolute; top:10%; left:40%; width:400px; background-color: white; font-size:small">
+        <button id="startStopButton" type="button" onclick="startStop()">Start/Stop Timer</button>
+        <br><br>
         <input type="text" id="starter" value="Starting Pokemon">
             <button id="setStarter">Update</button>
             <br><br><br>
@@ -436,7 +437,64 @@
 
         </div>   
 
-
+        <script>
+            let startTime;
+            let running = false;
+            let totalPausedTime = 0;
+            let pausedTime = 0;
+        
+            function updateStopwatchDisplay() {
+                const currentTime = new Date().getTime() - startTime - totalPausedTime;
+                const hours = Math.floor(currentTime / 3600000);
+                const minutes = Math.floor((currentTime % 3600000) / 60000);
+                const seconds = Math.floor((currentTime % 60000) / 1000);
+                const milliseconds = currentTime % 1000;
+        
+                const displayTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                const displayMilliseconds = `.${String(milliseconds).padStart(3, '0')}`;
+                
+                document.getElementById('stopwatch').textContent = displayTime;
+                document.getElementById('milliseconds').textContent = displayMilliseconds;
+        
+                if (running) {
+                    requestAnimationFrame(updateStopwatchDisplay);
+                }
+            }
+        
+            function startStop() {
+                if (running) {
+                    running = false;
+                    // Calculate the paused time
+                    pausedTime = new Date().getTime();//- startTime;
+                    // document.getElementById('startStopButton').textContent = 'Start';
+                } else {
+                    running = true;
+                    if (startTime == null) {
+                        startTime = new Date().getTime();
+                        pausedTime = 0;
+                        totalPausedTime = 0;
+                    }
+                    else {
+                        totalPausedTime += (new Date().getTime() - pausedTime);
+                    }
+                    // startTime = new Date().getTime();
+                    // document.getElementById('startStopButton').textContent = 'Stop';
+                    updateStopwatchDisplay();
+                }
+            }
+        
+            function resetStopwatch() {
+                running = false;
+                pausedTime = 0;
+                totalPausedTime = 0;
+                // document.getElementById('startStopButton').textContent = 'Start';
+                startTime = new Date().getTime();
+                pausedTime = startTime;
+                document.getElementById('stopwatch').textContent = '00:00:00';
+                document.getElementById('milliseconds').textContent = '.000';
+            }
+        </script>
+        
         
 
 
@@ -1302,46 +1360,7 @@
                     return 0;
                 }
 
-                //stopwatch functions
-                let startTime;
-                let running = false;
-
-                function updateStopwatchDisplay() {
-                    const currentTime = new Date().getTime() - startTime;
-                    const hours = Math.floor(currentTime / 3600000);
-                    const minutes = Math.floor((currentTime % 3600000) / 60000);
-                    const seconds = Math.floor((currentTime % 60000) / 1000);
-                    const milliseconds = currentTime % 1000;
-
-                    const displayTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                    const displayMilliseconds = `.${String(milliseconds).padStart(3, '0')}`;
-                    
-                    document.getElementById('stopwatch').textContent = displayTime;
-                    document.getElementById('milliseconds').textContent = displayMilliseconds;
-
-                    if (running) {
-                        requestAnimationFrame(updateStopwatchDisplay);
-                    }
-                    }
-
-                function startStop() {
-                    if (running) {
-                        running = false;
-                        // document.getElementById('startStopButton').textContent = 'Start';
-                    } else {
-                        running = true;
-                        startTime = new Date().getTime();
-                        // document.getElementById('startStopButton').textContent = 'Stop';
-                        updateStopwatchDisplay();
-                    }
-                }
-
-                function resetStopwatch() {
-                    running = false;
-                    // document.getElementById('startStopButton').textContent = 'Start';
-                    document.getElementById('stopwatch').textContent = '00:00:00';
-                    document.getElementById('milliseconds').textContent = '.000';
-                }
+                
 
 
                 var playerId = this.mapper.properties.player.playerId.value;
