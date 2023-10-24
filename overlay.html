@@ -379,14 +379,15 @@
             </select>
     </div>
 
-    <div class="framed" style="position: absolute; top:30%; left:30%; background-color: white; height:570px; width:750px;" id="encounterChecks">
+    <div class="framed" style="position: absolute; top:30%; left:30%; background-color: white; height:600px; width:780px;" id="encounterChecks">
             <h4 style="text-align: center";>Encounters</4>
-            <div style="text-align: left";>
+            <div style="text-align: left; font-size: small;">
             Johto<br><br>
             Route 29<input type="checkbox" id="Route 29" checked> <br>
             Route 30<input type="checkbox" id="Route 30" checked> <br>
             Route 31<input type="checkbox" id="Route 31" checked> <br>
             Route 32<input type="checkbox" id="Route 32" checked> <br>
+            <span style="font-size: x-small">Bellsprout (requires modded rom)<input type="checkbox" id="Route 32 Bellsprout" checked> <br></span>
             Route 34<input type="checkbox" id="Route 34" checked> <br>
             Route 35<input type="checkbox" id="Route 35" checked> <br>
             Route 37<input type="checkbox" id="Route 37" checked> <br>
@@ -399,6 +400,8 @@
             Sprout Tower<input type="checkbox" id="Sprout Tower" checked> <br>
             Union Cave<input type="checkbox" id="Union Cave" checked> <br>
             Ilex Forest<input type="checkbox" id="Ilex Forest" checked> <br>
+            <span style="font-size: x-small">Psyduck (requires modded rom)<input type="checkbox" id="Ilex Forest Psyduck" checked> <br></span>
+
             Slowpoke Well<input type="checkbox" id="Slowpoke Well" checked> <br>
             Mt. Mortar<input type="checkbox" id="Mt. Mortar" checked> <br>
             Burnt Tower<input type="checkbox" id="Burnt Tower" checked> <br>
@@ -408,7 +411,7 @@
             Dragon's Den<input type="checkbox" id="Dragon's Den" checked> <br>
             Blackthorn City<input type="checkbox" id="Blackthorn City" checked> <br>
             </div>
-            <div style="margin-left:400px; margin-top:-460px;">
+            <div style="margin-left:400px; margin-top:-460px; font-size: small;">
             Kanto<br><br>
             Tohjo Falls<input type="checkbox" id="Tohjo Falls" checked> <br>
             Mt. Silver<input type="checkbox" id="Mt. Silver" checked> <br>
@@ -1499,6 +1502,32 @@
                         // console.log(group + encounters[i][1] + number + encounters[i][2])
                         if (group == encounters[i][1] && number == encounters[i][2] && !document.getElementById(encounters[i][0]).checked) {
                             // console.log(this.frozenEncounters);
+                            // console.log(encounters[i][0] + " , " + document.getElementById("Route 32 Bellsprout").checked + "spec[5]: "+ this.mapper.properties.player.team[5].species.value + "have bellsprout: "+((this.mapper.properties.player.team[1].species=="Bellsprout") || 
+                            //     (this.mapper.properties.player.team[2].species.value=="Bellsprout") ||
+                            //     (this.mapper.properties.player.team[3].species.value=="Bellsprout") ||
+                            //     (this.mapper.properties.player.team[4].species.value=="Bellsprout") ||
+                            //     (this.mapper.properties.player.team[5].species.value=="Bellsprout")));
+                            if(encounters[i][0] == "Route 32" && document.getElementById("Route 32 Bellsprout").checked && 
+                                !((this.mapper.properties.player.team[1].species.value=="Bellsprout") || 
+                                (this.mapper.properties.player.team[2].species.value=="Bellsprout") ||
+                                (this.mapper.properties.player.team[3].species.value=="Bellsprout") ||
+                                (this.mapper.properties.player.team[4].species.value=="Bellsprout") ||
+                                (this.mapper.properties.player.team[5].species.value=="Bellsprout"))
+                            ){
+                            
+                                return;
+                            }
+                            if(encounters[i][0] == "Ilex Forest" && document.getElementById("Ilex Forest Psyduck").checked && 
+                                !((this.mapper.properties.player.team[1].species.value=="Psyduck") || 
+                                (this.mapper.properties.player.team[2].species.value=="Psyduck") ||
+                                (this.mapper.properties.player.team[3].species.value=="Psyduck") ||
+                                (this.mapper.properties.player.team[4].species.value=="Psyduck") ||
+                                (this.mapper.properties.player.team[5].species.value=="Psyduck"))
+                            ){
+                            
+                                return;
+                            }
+                            
                             await Promise.all([
                                 
                                 await this.mapper.properties.encounterRate.morning.setBytes([rate], false),
@@ -1519,6 +1548,16 @@
                     await nerfEncounters(); //
                 })
                 this.mapper.properties.encounterRate.water.change(async () => {
+                    //console.log("You changed maps")
+                    // await delay(500)
+                    await nerfEncounters(); //
+                })
+                this.mapper.properties.player.teamCount.change(async () => {
+                    //console.log("You changed maps")
+                    // await delay(500)
+                    await nerfEncounters(); //
+                })
+                this.mapper.properties.battle.mode.change(async () => {
                     //console.log("You changed maps")
                     // await delay(500)
                     await nerfEncounters(); //
