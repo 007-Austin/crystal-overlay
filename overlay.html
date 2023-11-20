@@ -1007,9 +1007,9 @@
                 setHiddenPowerM(this.mapper);
                 setTimeout(() => { //delay so gamehook can update
                     this.mapper.properties.player.team[0].dvAttack.change(async(x) => {setHiddenPowerM(this.mapper);})
-                    this.mapper.properties.player.team[0].dvDefense.change(async(x) => {setHiddenPowerM(this.mapper);})
-                    this.mapper.properties.player.team[0].dvSpeed.change(async(x) => {setHiddenPowerM(this.mapper);})
-                    this.mapper.properties.player.team[0].dvSpecial.change(async(x) => {setHiddenPowerM(this.mapper);})
+                    // this.mapper.properties.player.team[0].dvDefense.change(async(x) => {setHiddenPowerM(this.mapper);})
+                    // this.mapper.properties.player.team[0].dvSpeed.change(async(x) => {setHiddenPowerM(this.mapper);})
+                    // this.mapper.properties.player.team[0].dvSpecial.change(async(x) => {setHiddenPowerM(this.mapper);})
                 }, 3);
 
                 //document.getElementById ("setHiddenPower").addEventListener ("click", setHiddenPower, false);
@@ -1048,35 +1048,43 @@
                 }
 
                 async function setHiddenPowerM(mapper){
-                    var type = document.getElementById("changeHiddenPower").value;
-                    var atk = 15;
-                    var def = 15;
-                    var spd = 15;
-                    var spe = 15;
-                    // console.log(type);
-                    switch (type){
-                        case "Bug": atk=13; def=13; break;
-                        case "Dark": atk = 15; def = 15; break;
-                        case "Dragon": atk = 15; def = 14; break;
-                        case "Electric": atk=14; def = 15; break;
-                        case "Fighting": atk=12; def=12; break;
-                        case "Fire": atk=14; def=12; break;
-                        case "Flying": atk = 12; def = 13; break;
-                        case "Ghost": atk = 13; def = 14; break;
-                        case "Grass": atk = 14; def = 14; break;
-                        case "Ground": atk = 12; def = 15; break;
-                        case "Ice": atk = 15; def = 13; break;
-                        case "Poison": atk = 12; def = 14; break;
-                        case "Psychic": atk = 15; def = 12; break;
-                        case "Rock": atk= 13; def = 12; break;
-                        case "Steel": atk = 13; def = 15; break;
-                        case "Water": atk = 14; def = 13; break;
-                        case "Perfect": atk = 15; def = 15; spd = 15; spe = 15; break;
-                        case "Minimum": atk = 0; def = 0; spd = 0; spe = 0; break;
-                        default: atk = 15; def = 15; spd = 0; spe = 0; break;
+                    if(mapper.properties.player.team[0].species.value == null || mapper.properties.player.team[0].species.value == '') {
+                        return;
                     }
-                    await setDVs(atk, def, spd, spe, mapper);
-
+                    try {
+                        var type = document.getElementById("changeHiddenPower").value;
+                        var atk = 15;
+                        var def = 15;
+                        var spd = 15;
+                        var spe = 15;
+                        // console.log(type);
+                        switch (type){
+                            case "Bug": atk=13; def=13; break;
+                            case "Dark": atk = 15; def = 15; break;
+                            case "Dragon": atk = 15; def = 14; break;
+                            case "Electric": atk=14; def = 15; break;
+                            case "Fighting": atk=12; def=12; break;
+                            case "Fire": atk=14; def=12; break;
+                            case "Flying": atk = 12; def = 13; break;
+                            case "Ghost": atk = 13; def = 14; break;
+                            case "Grass": atk = 14; def = 14; break;
+                            case "Ground": atk = 12; def = 15; break;
+                            case "Ice": atk = 15; def = 13; break;
+                            case "Poison": atk = 12; def = 14; break;
+                            case "Psychic": atk = 15; def = 12; break;
+                            case "Rock": atk= 13; def = 12; break;
+                            case "Steel": atk = 13; def = 15; break;
+                            case "Water": atk = 14; def = 13; break;
+                            case "Perfect": atk = 15; def = 15; spd = 15; spe = 15; break;
+                            case "Minimum": atk = 0; def = 0; spd = 0; spe = 0; break;
+                            default: atk = 15; def = 15; spd = 0; spe = 0; break;
+                        }
+                        await setDVs(atk, def, spd, spe, mapper);
+                    }
+                    catch (error) {
+                        console.error("error setting hidden power",error);
+                        return;
+                    }
                 }
 
                 async function setDVs(attack, defense, speed, special, mapper) {
