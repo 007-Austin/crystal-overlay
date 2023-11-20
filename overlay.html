@@ -1005,10 +1005,12 @@
                     setTime(day,18,evt.currentTarget.myParam);
                 }
                 setHiddenPowerM(this.mapper);
-                this.mapper.properties.player.team[0].dvAttack.change(async(x) => {setHiddenPowerM(this.mapper);})
-                this.mapper.properties.player.team[0].dvDefense.change(async(x) => {setHiddenPowerM(this.mapper);})
-                this.mapper.properties.player.team[0].dvSpeed.change(async(x) => {setHiddenPowerM(this.mapper);})
-                this.mapper.properties.player.team[0].dvSpecial.change(async(x) => {setHiddenPowerM(this.mapper);})
+                setTimeout(() => { //delay so gamehook can update
+                    this.mapper.properties.player.team[0].dvAttack.change(async(x) => {setHiddenPowerM(this.mapper);})
+                    this.mapper.properties.player.team[0].dvDefense.change(async(x) => {setHiddenPowerM(this.mapper);})
+                    this.mapper.properties.player.team[0].dvSpeed.change(async(x) => {setHiddenPowerM(this.mapper);})
+                    this.mapper.properties.player.team[0].dvSpecial.change(async(x) => {setHiddenPowerM(this.mapper);})
+                }, 3);
 
                 //document.getElementById ("setHiddenPower").addEventListener ("click", setHiddenPower, false);
                 //document.getElementById ("setHiddenPower").myParam = this.mapper;
