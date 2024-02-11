@@ -1450,9 +1450,8 @@
                     ["Route 41", "CIANWOOD", 2, 0, 0, 0, 15],
                     ["Route 41", "CIANWOOD", 3, 0, 0, 0, 15],
                     ["Route 42", "MAHOGANY", 5, 25, 25, 25, 10],
-                    ["Burnt Tower", "DUNGEONS",13, 10, 10, 10, 0]
-                    ["Burnt Tower", "DUNGEONS",14, 15, 15, 15, 0]
-
+                    ["Burnt Tower", "DUNGEONS",13, 10, 10, 10, 0],
+                    ["Burnt Tower", "DUNGEONS",14, 15, 15, 15, 0],
                     ["Whirl", "DUNGEONS", 66, 15, 15, 15, 0],
                     ["Whirl", "DUNGEONS", 67, 15, 15, 15, 0],
                     ["Whirl", "DUNGEONS", 68, 15, 15, 15, 10],
@@ -1512,6 +1511,7 @@
                         // console.log(group + encounters[i][1] + number + encounters[i][2])
                         if (group == encounters[i][1] && number == encounters[i][2] && !document.getElementById(encounters[i][0]).checked) {
                             // console.log(this.frozenEncounters);
+                            console.log(encounters[i][1])
                             // console.log(encounters[i][0] + " , " + document.getElementById("Route 32 Bellsprout").checked + "spec[5]: "+ this.mapper.properties.player.team[5].species.value + "have bellsprout: "+((this.mapper.properties.player.team[1].species=="Bellsprout") || 
                             //     (this.mapper.properties.player.team[2].species.value=="Bellsprout") ||
                             //     (this.mapper.properties.player.team[3].species.value=="Bellsprout") ||
