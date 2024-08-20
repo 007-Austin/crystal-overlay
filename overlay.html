@@ -7,9 +7,10 @@
     <!-- <link rel="stylesheet" href="style.css"> -->
     <!-- <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="./styles/css-pokemon-gameboy.css"> -->
-    <link rel="stylesheet" href="https://luttje.github.io/css-pokemon-gameboy/styles/css-pokemon-gameboy.css">
+    <!-- <link rel="stylesheet" href="https://luttje.github.io/css-pokemon-gameboy/styles/css-pokemon-gameboy.css"> -->
+    <link rel="stylesheet" href="style/css-pokemon-gameboy.css">
 
-    <link href="style.css" rel="stylesheet" \>
+    <link href="style/style.css" rel="stylesheet" \>
     <style>
         body {
             /*font-family: 'Open Sans'; */
@@ -19,7 +20,7 @@
 
             font-family: 'Pokemon GB';
             font-smooth:never;
-            src:url("https://luttje.github.io/css-pokemon-gameboy/styles/fonts/Pokemon GB.ttf");
+            src:url("style/Pokemon GB.ttf");
             /*@font-face {
                 font-family: "PKMN RBYGSC";
                 src: url("yellow.PKMN RBYGSC.ttf");
@@ -360,6 +361,7 @@
             <select id="changeHiddenPower" value="Perfect">
                 <option value="Perfect">Perfect  DVs</option>
                 <option value="Minimum">Minimum  DVs</option>
+                <option value="1 Atk">1 Atk Attract</option>
                 <option value="Bug">Bug 13/13</option>
                 <option value="Dark">Dark 15/15</option>
                 <option value="Dragon">Dragon 15/14</option>
@@ -1040,6 +1042,8 @@
                         case "Water": atk = 14; def = 13; break;
                         case "Perfect": atk = 15; def = 15; spd = 15; spe = 15; break;
                         case "Minimum": atk = 0; def = 0; spd = 0; spe = 0; break;
+                        case "1 Atk": atk = 1; def = 15; spd = 15; spe = 15; break;
+
                         default: atk = 15; def = 15; spd = 0; spe = 0; break;
                     }
                     var mapper = event.currentTarget.myParam;
@@ -1077,6 +1081,7 @@
                             case "Water": atk = 14; def = 13; break;
                             case "Perfect": atk = 15; def = 15; spd = 15; spe = 15; break;
                             case "Minimum": atk = 0; def = 0; spd = 0; spe = 0; break;
+                            case "1 Atk": atk = 1; def = 15; spd = 15; spe = 15; break;
                             default: atk = 15; def = 15; spd = 0; spe = 0; break;
                         }
                         await setDVs(atk, def, spd, spe, mapper);
