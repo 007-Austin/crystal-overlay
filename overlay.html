@@ -63,7 +63,24 @@
 
           });
         }
-
+        
+        function toggleEncounterVisibility() {
+            var x = document.getElementById("encounters");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+            x = document.getElementById("encounters2");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        } 
+        function changeSprite() {
+            document.getElementById("portrait").src=document.getElementById("customUrl").value;
+        }
         
 
         </script>
@@ -345,7 +362,10 @@
         <br><br>
         <input type="text" id="starter" value="Starting Pokemon">
             <button id="setStarter">Update</button>
-            <br><br><br>
+            <br>
+            <input type="text" id="customUrl" value="customSprite">
+            <button id="setURL" onclick="changeSprite()">Update</button>
+            <br>
             <select id="changeDay" value="Sunday">
                 <option value="Sunday">Sunday</option>
                 <option value="Monday">Monday</option>
@@ -383,7 +403,8 @@
 
     <div class="framed" style="position: absolute; top:30%; left:30%; background-color: white; height:600px; width:780px;" id="encounterChecks">
             <h4 style="text-align: center";>Encounters</4>
-            <div style="text-align: left; font-size: small;">
+            <button onclick="toggleEncounterVisibility()">Show/Hide</button>
+            <div style="text-align: left; font-size: small;" id = "encounters">
             Johto<br><br>
             Route 29<input type="checkbox" id="Route 29" checked> <br>
             Route 30<input type="checkbox" id="Route 30" checked> <br>
@@ -391,7 +412,10 @@
             Route 32<input type="checkbox" id="Route 32" checked> <br>
             <span style="font-size: x-small">Bellsprout (requires modded rom)<input type="checkbox" id="Route 32 Bellsprout" checked> <br></span>
             Route 34<input type="checkbox" id="Route 34" checked> <br>
+            <span style="font-size: x-small">Abra (requires modded rom)<input type="checkbox" id="Route 34 Abra" checked> <br></span>
             Route 35<input type="checkbox" id="Route 35" checked> <br>
+            <span style="font-size: x-small">Pidgey (requires modded rom)<input type="checkbox" id="Route 35 Pidgey" checked> <br></span>
+
             Route 37<input type="checkbox" id="Route 37" checked> <br>
             Route 38<input type="checkbox" id="Route 38" checked> <br>
             Route 40<input type="checkbox" id="Route 40" checked> <br>
@@ -413,7 +437,7 @@
             Dragon's Den<input type="checkbox" id="Dragon's Den" checked> <br>
             Blackthorn City<input type="checkbox" id="Blackthorn City" checked> <br>
             </div>
-            <div style="margin-left:400px; margin-top:-460px; font-size: small;">
+            <div style="margin-left:400px; margin-top:-460px; font-size: small;" id = "encounters2">
             Kanto<br><br>
             Tohjo Falls<input type="checkbox" id="Tohjo Falls" checked> <br>
             Mt. Silver<input type="checkbox" id="Mt. Silver" checked> <br>
@@ -1538,6 +1562,28 @@
                                 (this.mapper.properties.player.team[3].species.value=="Psyduck") ||
                                 (this.mapper.properties.player.team[4].species.value=="Psyduck") ||
                                 (this.mapper.properties.player.team[5].species.value=="Psyduck"))
+                            ){
+                            
+                                return;
+                            }
+                            let mon = "Abra";
+                            if(encounters[i][0] == "Route 34" && document.getElementById("Route 34 Abra").checked && 
+                                !((this.mapper.properties.player.team[1].species.value==mon) || 
+                                (this.mapper.properties.player.team[2].species.value==mon) ||
+                                (this.mapper.properties.player.team[3].species.value==mon) ||
+                                (this.mapper.properties.player.team[4].species.value==mon) ||
+                                (this.mapper.properties.player.team[5].species.value==mon))
+                            ){
+                            
+                                return;
+                            }
+                            mon = "Pidgey";
+                            if(encounters[i][0] == "Route 35" && document.getElementById("Route 35 Pidgey").checked && 
+                                !((this.mapper.properties.player.team[1].species.value==mon) || 
+                                (this.mapper.properties.player.team[2].species.value==mon) ||
+                                (this.mapper.properties.player.team[3].species.value==mon) ||
+                                (this.mapper.properties.player.team[4].species.value==mon) ||
+                                (this.mapper.properties.player.team[5].species.value==mon))
                             ){
                             
                                 return;
