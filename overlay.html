@@ -750,7 +750,11 @@
             },
             computed: {
                 displayPokemonName() {
-                    if (this.mapper.properties.player.team[0].species.value === null) {
+                    console.log("boop")
+                    if(document.getElementById("starter").value != "Starting Pokemon" && document.getElementById("starter").value != "") {
+                        return document.getElementById("starter").value;
+                    }
+                    else if (this.mapper.properties.player.team[0].species.value === null) {
                         return '';
                     } else {
                         return this.mapper.properties.player.team[0].species;
@@ -1180,7 +1184,9 @@
                         }
 
                         var lead = this.mapper.properties.player.team[0].species;
-                        document.getElementById("startingPokemon").innerHTML = lead;
+                        if(document.getElementById("starter").value != "Starting Pokemon" && document.getElementById("starter").value != "") {
+                            document.getElementById("startingPokemon").innerHTML = lead;
+                        }
                         var imgsrc = "sprites/Spr_2c_";
                         if(this.mapper.properties.player.team[0].pokedexNumber.value!=null) {
                             dexNum = this.mapper.properties.player.team[0].pokedexNumber.value;
