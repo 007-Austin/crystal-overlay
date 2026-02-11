@@ -1173,7 +1173,12 @@
 
                 this.mapper.properties.player.team[0].species.change(async(x) => {
                     setTimeout(() => { //delay so gamehook can update
-                        
+                        if(document.getElementById("customUrl").value != "customSprite" && document.getElementById("customUrl").value != "")
+                        {
+                            console.log(document.getElementById("customUrl").value);
+                            return;
+                        }
+
                         var lead = this.mapper.properties.player.team[0].species;
                         document.getElementById("startingPokemon").innerHTML = lead;
                         var imgsrc = "sprites/Spr_2c_";
